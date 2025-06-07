@@ -5,34 +5,18 @@
 {% block page_actions %}
     <!-- Desktop Actions -->
     <div class="btn-group d-none d-md-inline-flex" role="group">
-        <button class="btn btn-primary" onclick="refreshDashboard()">
+        <button class="btn btn-primary-refined" onclick="refreshDashboard()">
             <i class="bi bi-arrow-clockwise me-1"></i>Refresh
         </button>
-        <button class="btn btn-outline-secondary" onclick="exportDashboard()">
+        <button class="btn btn-secondary-refined" onclick="exportDashboard()">
             <i class="bi bi-download me-1"></i>Export
         </button>
-        <button class="btn btn-outline-info" onclick="configureDashboard()">
-            <i class="bi bi-gear me-1"></i>Settings
-        </button>
     </div>
-    
-    <!-- Mobile Actions Dropdown -->
-    <div class="dropdown d-md-none">
-        <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-            <i class="bi bi-three-dots-vertical"></i>
-        </button>
-        <ul class="dropdown-menu dropdown-menu-end">
-            <li><a class="dropdown-item" href="#" onclick="refreshDashboard()">
-                <i class="bi bi-arrow-clockwise me-2"></i>Refresh
-            </a></li>
-            <li><a class="dropdown-item" href="#" onclick="exportDashboard()">
-                <i class="bi bi-download me-2"></i>Export
-            </a></li>
-            <li><a class="dropdown-item" href="#" onclick="configureDashboard()">
-                <i class="bi bi-gear me-2"></i>Settings
-            </a></li>
-        </ul>
-    </div>
+{% endblock %}
+
+{% block mobile_page_actions %}
+    <!-- Dashboard mobile actions are simpler -->
+    <button class="btn btn-primary btn-sm" onclick="refreshDashboard()"><i class="bi bi-arrow-clockwise"></i></button>
 {% endblock %}
 
 {% block content %}

@@ -3,51 +3,19 @@
 {% block page_title %}Usage Logging{% endblock %}
 
 {% block page_actions %}
-    <!-- Desktop Actions -->
-    <div class="d-none d-md-flex gap-2">
-        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#logUsageModal">
-            <i class="bi bi-plus-circle me-1"></i>Log Usage
-        </button>
-        <div class="btn-group" role="group">
-            <button class="btn btn-outline-primary btn-floating" onclick="refreshLogs()" 
-                    data-bs-toggle="tooltip" title="Refresh">
-                <i class="bi bi-arrow-clockwise"></i>
-            </button>
-            <button class="btn btn-outline-info btn-floating" onclick="filterLogs()" 
-                    data-bs-toggle="tooltip" title="Filter">
-                <i class="bi bi-funnel"></i>
-            </button>
-            <button class="btn btn-outline-success btn-floating" onclick="exportUsageLogs()" 
-                    data-bs-toggle="tooltip" title="Export">
-                <i class="bi bi-download"></i>
-            </button>
-        </div>
-    </div>
-    
-    <!-- Mobile Actions Dropdown -->
-    <div class="dropdown d-md-none">
-        <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-            <i class="bi bi-three-dots-vertical"></i>
-        </button>
-        <ul class="dropdown-menu dropdown-menu-end">
-            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#logUsageModal">
-                <i class="bi bi-plus-circle me-2"></i>Log Usage
-            </a></li>
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" href="#" onclick="refreshLogs()">
-                <i class="bi bi-arrow-clockwise me-2"></i>Refresh
-            </a></li>
-            <li><a class="dropdown-item" href="#" onclick="filterLogs()">
-                <i class="bi bi-funnel me-2"></i>Filter
-            </a></li>
-            <li><a class="dropdown-item" href="#" onclick="exportUsageLogs()">
-                <i class="bi bi-download me-2"></i>Export
-            </a></li>
-        </ul>
-    </div>
+    <button class="btn btn-primary-refined" data-bs-toggle="modal" data-bs-target="#logUsageModal">
+        <i class="bi bi-plus-circle me-1"></i>Log Usage
+    </button>
 {% endblock %}
 
 {% block content %}
+    <!-- Mobile Touch Buttons -->
+    <div class="d-md-none mb-4">
+        <button class="btn btn-primary-refined btn-lg w-100 py-3" data-bs-toggle="modal" data-bs-target="#logUsageModal">
+            <i class="bi bi-plus-circle fs-4 me-2"></i>Log New Usage
+        </button>
+    </div>
+    
     <!-- Usage Summary Cards -->
     <div class="row mb-4 g-3">
         <div class="col-6 col-md-3 mb-3">

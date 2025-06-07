@@ -3,97 +3,63 @@
 {% block page_title %}Reports & Analytics{% endblock %}
 
 {% block page_actions %}
-    <div class="btn-group" role="group">
-        <button class="btn btn-primary" onclick="generateReport()">
-            <i class="bi bi-file-earmark-text me-1"></i>Generate Report
-        </button>
-        <button class="btn btn-success" onclick="exportData()">
-            <i class="bi bi-download me-1"></i>Export Data
-        </button>
-    </div>
+    <button class="btn btn-primary-refined" onclick="generateReport()">
+        <i class="bi bi-file-earmark-text me-1"></i>Generate Report
+    </button>
 {% endblock %}
 
 {% block content %}
+<div class="container-fluid pt-3">
     <!-- Summary Cards -->
-    <div class="row mb-4">
-        <div class="col-6 col-md-3">
-            <div class="card bg-primary text-white">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between">
-                        <div>
-                            <h4 class="card-title">{{ total_items or 0 }}</h4>
-                            <p class="card-text">Total Items</p>
-                        </div>
-                        <div class="align-self-center">
-                            <i class="bi bi-box-seam fs-1"></i>
-                        </div>
-                    </div>
-                </div>
+    <div class="row mb-4 g-3">
+        <div class="col-12 col-sm-6 col-lg-3">
+            <div class="metric-card-compact card-hover">
+                <div class="metric-label">Total Items</div>
+                <div class="metric-value">{{ total_items or 0 }}</div>
+                <div class="metric-trend neutral"><i class="bi bi-box-seam"></i> Inventory count</div>
             </div>
         </div>
-        <div class="col-6 col-md-3">
-            <div class="card bg-success text-white">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between">
-                        <div>
-                            <h4 class="card-title">{{ low_stock_count or 0 }}</h4>
-                            <p class="card-text">Low Stock Items</p>
-                        </div>
-                        <div class="align-self-center">
-                            <i class="bi bi-exclamation-triangle fs-1"></i>
-                        </div>
-                    </div>
-                </div>
+        <div class="col-12 col-sm-6 col-lg-3">
+            <div class="metric-card-compact card-hover">
+                <div class="metric-label">Low Stock Items</div>
+                <div class="metric-value text-warning">{{ low_stock_count or 0 }}</div>
+                <div class="metric-trend negative"><i class="bi bi-exclamation-triangle"></i> Needs attention</div>
             </div>
         </div>
-        <div class="col-6 col-md-3">
-            <div class="card bg-warning text-white">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between">
-                        <div>
-                            <h4 class="card-title">{{ total_usage_logs or 0 }}</h4>
-                            <p class="card-text">Usage Logs</p>
-                        </div>
-                        <div class="align-self-center">
-                            <i class="bi bi-clipboard-data fs-1"></i>
-                        </div>
-                    </div>
-                </div>
+        <div class="col-12 col-sm-6 col-lg-3">
+            <div class="metric-card-compact card-hover">
+                <div class="metric-label">Usage Logs</div>
+                <div class="metric-value">{{ total_usage_logs or 0 }}</div>
+                <div class="metric-trend positive"><i class="bi bi-clipboard-data"></i> Activity tracked</div>
             </div>
         </div>
-        <div class="col-6 col-md-3">
-            <div class="card bg-info text-white">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between">
-                        <div>
-                            <h4 class="card-title">{{ total_orphanages or 0 }}</h4>
-                            <p class="card-text">Orphanages</p>
-                        </div>
-                        <div class="align-self-center">
-                            <i class="bi bi-house fs-1"></i>
-                        </div>
-                    </div>
-                </div>
+        <div class="col-12 col-sm-6 col-lg-3">
+            <div class="metric-card-compact card-hover">
+                <div class="metric-label">Facilities</div>
+                <div class="metric-value">{{ total_orphanages or 0 }}</div>
+                <div class="metric-trend neutral"><i class="bi bi-house"></i> Locations served</div>
             </div>
         </div>
     </div>
 
     <!-- Charts Section -->
-    <div class="row mb-4">
-        <div class="col-md-6">
-            <div class="card">
+    <div class="row mb-4 g-4">
+        <div class="col-12 col-lg-6">
+            <div class="card card-hover">
                 <div class="card-header">
                     <h5 class="mb-0">
                         <i class="bi bi-bar-chart me-2"></i>Category Distribution
                     </h5>
                 </div>
                 <div class="card-body">
-                    <canvas id="categoryChart" width="400" height="200"></canvas>
+                    <div class="chart-container" style="height: 250px; min-height: 250px;">
+                        <canvas id="categoryChart"></canvas>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="col-md-6">
-            <div class="card">
+        <div class="col-12 col-lg-6">
+            <div class="card card-hover">
                 <div class="card-header">
                     <h5 class="mb-0">
                         <i class="bi bi-graph-up me-2"></i>Usage Trends

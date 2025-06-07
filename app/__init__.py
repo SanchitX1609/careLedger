@@ -96,7 +96,7 @@ def init_sample_data():
     orphanage = Orphanage(
         name="Hope Children's Home",
         location="Mumbai, Maharashtra",
-        contact_person="Sister Mary",
+        contact_person="SJ",
         contact_phone="+91-9876543210",
         contact_email="contact@hopechildrenshome.org"
     )

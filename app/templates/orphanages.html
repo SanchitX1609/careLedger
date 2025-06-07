@@ -3,8 +3,18 @@
 {% block page_title %}Orphanages Management{% endblock %}
 
 {% block page_actions %}
-    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addOrphanageModal">
-        <i class="bi bi-plus-circle me-1"></i>Add Orphanage
+    <!-- Desktop Actions -->
+    <div class="d-none d-md-inline-flex">
+        <button class="btn btn-primary-refined" data-bs-toggle="modal" data-bs-target="#addOrphanageModal">
+            <i class="bi bi-plus-circle me-1"></i>Add Orphanage
+        </button>
+    </div>
+{% endblock %}
+
+{% block mobile_page_actions %}
+    <!-- Mobile Actions -->
+    <button class="btn btn-primary btn-lg w-100 py-3" data-bs-toggle="modal" data-bs-target="#addOrphanageModal">
+        <i class="bi bi-plus-circle me-2"></i>Add New Orphanage
     </button>
 {% endblock %}
 
@@ -18,17 +28,19 @@
         </div>
         <div class="card-body">
             {% if orphanages %}
-                <div class="row">
+                <div class="row g-4">
                     {% for orphanage in orphanages %}
-                        <div class="col-md-6 col-lg-4 mb-4">
-                            <div class="card h-100 border-start border-4 border-primary">
+                        <div class="col-12 col-sm-6 col-lg-4">
+                            <div class="card h-100 border-start border-4 border-primary card-hover">
                                 <div class="card-body">
                                     <h5 class="card-title">{{ orphanage.name }}</h5>
                                     <p class="card-text">
-                                        <i class="bi bi-geo-alt me-1"></i>{{ orphanage.location }}<br>
-                                        <i class="bi bi-person me-1"></i>{{ orphanage.contact_person }}<br>
-                                        <i class="bi bi-envelope me-1"></i>{{ orphanage.email }}<br>
-                                        <i class="bi bi-telephone me-1"></i>{{ orphanage.phone }}
+                                        <i class="bi bi-geo-alt me-1 text-primary"></i>{{ orphanage.location }}<br>
+                                        <i class="bi bi-person me-1 text-info"></i>{{ orphanage.contact_person }}<br>
+                                        <span class="d-none d-sm-block">
+                                            <i class="bi bi-envelope me-1 text-success"></i>{{ orphanage.email }}<br>
+                                            <i class="bi bi-telephone me-1 text-warning"></i>{{ orphanage.phone }}
+                                        </span>
                                     </p>
                                     <small class="text-muted">
                                         Created: {{ orphanage.created_at.strftime('%m/%d/%Y') }}

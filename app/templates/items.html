@@ -3,48 +3,9 @@
 {% block page_title %}Items Management{% endblock %}
 
 {% block page_actions %}
-    <!-- Desktop Actions -->
-    <div class="d-none d-md-flex gap-2">
-        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addItemModal">
-            <i class="bi bi-plus-circle me-1"></i>Add Item
-        </button>
-        <div class="btn-group" role="group">
-            <button class="btn btn-outline-primary btn-floating" onclick="refreshItems()" 
-                    data-bs-toggle="tooltip" title="Refresh">
-                <i class="bi bi-arrow-clockwise"></i>
-            </button>
-            <button class="btn btn-outline-info btn-floating" onclick="importItems()" 
-                    data-bs-toggle="tooltip" title="Import Items">
-                <i class="bi bi-upload"></i>
-            </button>
-            <button class="btn btn-outline-success btn-floating" onclick="exportItems()" 
-                    data-bs-toggle="tooltip" title="Export Items">
-                <i class="bi bi-download"></i>
-            </button>
-        </div>
-    </div>
-    
-    <!-- Mobile Actions Dropdown -->
-    <div class="dropdown d-md-none">
-        <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-            <i class="bi bi-three-dots-vertical"></i>
-        </button>
-        <ul class="dropdown-menu dropdown-menu-end">
-            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#addItemModal">
-                <i class="bi bi-plus-circle me-2"></i>Add Item
-            </a></li>
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" href="#" onclick="refreshItems()">
-                <i class="bi bi-arrow-clockwise me-2"></i>Refresh
-            </a></li>
-            <li><a class="dropdown-item" href="#" onclick="importItems()">
-                <i class="bi bi-upload me-2"></i>Import Items
-            </a></li>
-            <li><a class="dropdown-item" href="#" onclick="exportItems()">
-                <i class="bi bi-download me-2"></i>Export Items
-            </a></li>
-        </ul>
-    </div>
+    <button class="btn btn-primary-refined" data-bs-toggle="modal" data-bs-target="#addItemModal">
+        <i class="bi bi-plus-circle me-1"></i>Add Item
+    </button>
 {% endblock %}
 
 {% block content %}
