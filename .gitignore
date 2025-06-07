@@ -103,6 +103,7 @@ venv.bak/
 
 # Exclude documentation files (project specific)
 *.md
+!README.md
 
 # Exclude test files (project specific)
 test_*.py
