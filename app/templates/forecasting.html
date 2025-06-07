@@ -5,18 +5,15 @@
 {% block page_actions %}
     <!-- Desktop Actions -->
     <div class="d-none d-md-flex gap-2 flex-wrap">
-        <button class="btn btn-outline-primary animate-card" onclick="refreshForecasting()" data-bs-toggle="tooltip" title="Refresh Forecasting Data">
-            <i class="bi bi-arrow-clockwise me-1"></i>
-            <span>Refresh</span>
+        <button class="btn btn-outline-primary" onclick="refreshForecasting()" data-bs-toggle="tooltip" title="Refresh Forecasting Data">
+            <i class="bi bi-arrow-clockwise me-1"></i>Refresh
         </button>
-        <button class="btn btn-outline-info animate-card" onclick="exportForecastData()" data-bs-toggle="tooltip" title="Export Forecast Report">
-            <i class="bi bi-download me-1"></i>
-            <span>Export</span>
+        <button class="btn btn-outline-info" onclick="exportForecastData()" data-bs-toggle="tooltip" title="Export Forecast Report">
+            <i class="bi bi-download me-1"></i>Export
         </button>
         <div class="dropdown">
-            <button class="btn btn-outline-secondary dropdown-toggle animate-card" type="button" data-bs-toggle="dropdown">
-                <i class="bi bi-gear me-1"></i>
-                <span>Settings</span>
+            <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                <i class="bi bi-gear me-1"></i>Settings
             </button>
             <ul class="dropdown-menu">
                 <li><a class="dropdown-item" href="#" onclick="adjustForecastPeriod()">
@@ -24,10 +21,6 @@
                 </a></li>
                 <li><a class="dropdown-item" href="#" onclick="configureAlerts()">
                     <i class="bi bi-bell me-2"></i>Alert Settings
-                </a></li>
-                <li><hr class="dropdown-divider"></li>
-                <li><a class="dropdown-item" href="#" onclick="viewForecastHistory()">
-                    <i class="bi bi-clock-history me-2"></i>Forecast History
                 </a></li>
             </ul>
         </div>
@@ -45,51 +38,11 @@
             <li><a class="dropdown-item" href="#" onclick="exportForecastData()">
                 <i class="bi bi-download me-2"></i>Export
             </a></li>
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" href="#" onclick="adjustForecastPeriod()">
-                <i class="bi bi-calendar3 me-2"></i>Forecast Period
-            </a></li>
-            <li><a class="dropdown-item" href="#" onclick="configureAlerts()">
-                <i class="bi bi-bell me-2"></i>Alert Settings
-            </a></li>
-            <li><a class="dropdown-item" href="#" onclick="viewForecastHistory()">
-                <i class="bi bi-clock-history me-2"></i>Forecast History
-            </a></li>
         </ul>
     </div>
 {% endblock %}
 
 {% block content %}
-    <!-- Mobile Touch Actions -->
-    <div class="d-md-none mb-4">
-        <div class="row g-2">
-            <div class="col-6">
-                <button class="btn btn-primary btn-lg w-100 animate-card" onclick="refreshForecasting()">
-                    <i class="bi bi-arrow-clockwise mb-1 d-block"></i>
-                    <small>Refresh</small>
-                </button>
-            </div>
-            <div class="col-6">
-                <button class="btn btn-info btn-lg w-100 animate-card" onclick="exportForecastData()">
-                    <i class="bi bi-download mb-1 d-block"></i>
-                    <small>Export</small>
-                </button>
-            </div>
-            <div class="col-6">
-                <button class="btn btn-secondary btn-lg w-100 animate-card" onclick="adjustForecastPeriod()">
-                    <i class="bi bi-calendar3 mb-1 d-block"></i>
-                    <small>Period</small>
-                </button>
-            </div>
-            <div class="col-6">
-                <button class="btn btn-outline-secondary btn-lg w-100 animate-card" onclick="viewForecastHistory()">
-                    <i class="bi bi-clock-history mb-1 d-block"></i>
-                    <small>History</small>
-                </button>
-            </div>
-        </div>
-    </div>
-
     <!-- Item Information Header -->
     {% if item %}
     <div class="card mb-4 border-0 shadow-sm">
@@ -135,69 +88,107 @@
     <!-- Forecasting Summary Cards -->
     <div class="row mb-4 g-4">
         <div class="col-12 col-sm-6 col-lg-3">
-            <div class="metric-card-compact card-hover metric-card-gradient metric-card-purple">
-                <div class="metric-label">Forecast Accuracy</div>
-                <div class="metric-value" id="forecastAccuracy">{{ "%.1f"|format(forecasting_data.accuracy or 85.2) }}%</div>
-                <div class="metric-trend positive">
-                    <i class="bi bi-arrow-up"></i> 
-                    {% if forecasting_data.accuracy >= 85 %}Excellent{% elif forecasting_data.accuracy >= 75 %}Good{% else %}Improving{% endif %}
+            <div class="card border-0 shadow-lg h-100 position-relative overflow-hidden" style="background: linear-gradient(135deg, #2D3748 0%, #4A5568 100%);">
+                <div class="position-absolute top-0 start-0 w-100 h-100" style="background: linear-gradient(135deg, rgba(102, 126, 234, 0.9) 0%, rgba(118, 75, 162, 0.9) 100%);"></div>
+                <div class="card-body position-relative text-white">
+                    <div class="d-flex align-items-center mb-3">
+                        <i class="bi bi-graph-up fs-3 me-3" style="color: rgba(255, 255, 255, 0.9); text-shadow: 0 1px 3px rgba(0,0,0,0.3);"></i>
+                        <div>
+                            <div class="small mb-1" style="color: rgba(255, 255, 255, 0.8); font-weight: 500; text-shadow: 0 1px 2px rgba(0,0,0,0.2);">Forecast Accuracy</div>
+                            <div class="h4 mb-0 fw-bold" style="color: #ffffff; text-shadow: 0 1px 3px rgba(0,0,0,0.4);">{{ "%.1f"|format(forecasting_data.accuracy or 85.2) }}%</div>
+                        </div>
+                    </div>
+                    <div class="border-top pt-2" style="border-color: rgba(255, 255, 255, 0.3) !important;">
+                        <small style="color: rgba(255, 255, 255, 0.9); text-shadow: 0 1px 2px rgba(0,0,0,0.2);">
+                            <i class="bi bi-arrow-up me-1"></i>
+                            {% if forecasting_data.accuracy >= 85 %}Excellent{% elif forecasting_data.accuracy >= 75 %}Good{% else %}Improving{% endif %}
+                        </small>
+                    </div>
                 </div>
             </div>
         </div>
         
         <div class="col-12 col-sm-6 col-lg-3">
-            <div class="metric-card-compact card-hover metric-card-gradient metric-card-pink">
-                <div class="metric-label">Predicted Usage</div>
-                <div class="metric-value" id="predictedUsage">
-                    {% if forecasting_data.usage_prediction %}
-                        {{ "%.1f"|format(forecasting_data.usage_prediction.total_predicted) }}
-                    {% else %}
-                        45.2
-                    {% endif %}
-                </div>
-                <div class="metric-trend neutral">
-                    <i class="bi bi-graph-up-arrow"></i> {{ item.unit if item else 'units' }} (7 days)
-                    {% if forecasting_data.trend_analysis and forecasting_data.trend_analysis.direction %}
-                        <br><small>{{ forecasting_data.trend_analysis.direction.title() }} trend</small>
-                    {% endif %}
-                </div>
-            </div>
-        </div>
-        
-        <div class="col-12 col-sm-6 col-lg-3">
-            <div class="metric-card-compact card-hover metric-card-gradient metric-card-blue">
-                <div class="metric-label">Days Until Stockout</div>
-                <div class="metric-value" id="daysUntilStockout">
-                    {% if forecasting_data.stockout_prediction and forecasting_data.stockout_prediction.stockout_day %}
-                        {{ forecasting_data.stockout_prediction.stockout_day }}
-                    {% else %}
-                        14
-                    {% endif %}
-                </div>
-                <div class="metric-trend {% if (forecasting_data.stockout_prediction.stockout_day or 14) <= 7 %}critical{% elif (forecasting_data.stockout_prediction.stockout_day or 14) <= 14 %}warning{% else %}positive{% endif %}">
-                    <i class="bi bi-{% if (forecasting_data.stockout_prediction.stockout_day or 14) <= 7 %}exclamation-triangle{% elif (forecasting_data.stockout_prediction.stockout_day or 14) <= 14 %}exclamation-circle{% else %}check-circle{% endif %}"></i> 
-                    {% if (forecasting_data.stockout_prediction.stockout_day or 14) <= 7 %}Critical{% elif (forecasting_data.stockout_prediction.stockout_day or 14) <= 14 %}Warning{% else %}Safe{% endif %}
+            <div class="card border-0 shadow-lg h-100 position-relative overflow-hidden" style="background: linear-gradient(135deg, #2D3748 0%, #4A5568 100%);">
+                <div class="position-absolute top-0 start-0 w-100 h-100" style="background: linear-gradient(135deg, rgba(17, 153, 142, 0.9) 0%, rgba(56, 239, 125, 0.9) 100%);"></div>
+                <div class="card-body position-relative text-white">
+                    <div class="d-flex align-items-center mb-3">
+                        <i class="bi bi-calendar-week fs-3 me-3" style="color: rgba(255, 255, 255, 0.9); text-shadow: 0 1px 3px rgba(0,0,0,0.3);"></i>
+                        <div>
+                            <div class="small mb-1" style="color: rgba(255, 255, 255, 0.8); font-weight: 500; text-shadow: 0 1px 2px rgba(0,0,0,0.2);">Predicted Usage</div>
+                            <div class="h4 mb-0 fw-bold" style="color: #ffffff; text-shadow: 0 1px 3px rgba(0,0,0,0.4);">
+                                {% if forecasting_data.usage_prediction %}
+                                    {{ "%.1f"|format(forecasting_data.usage_prediction.total_predicted) }}
+                                {% else %}
+                                    45.2
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="border-top pt-2" style="border-color: rgba(255, 255, 255, 0.3) !important;">
+                        <small style="color: rgba(255, 255, 255, 0.9); text-shadow: 0 1px 2px rgba(0,0,0,0.2);">
+                            <i class="bi bi-clock me-1"></i>{{ item.unit if item else 'units' }} (7 days)
+                        </small>
+                    </div>
                 </div>
             </div>
         </div>
         
         <div class="col-12 col-sm-6 col-lg-3">
-            <div class="metric-card-compact card-hover metric-card-gradient metric-card-yellow">
-                <div class="metric-label">Confidence Level</div>
-                <div class="metric-value" id="confidenceLevel">
-                    {% if forecasting_data.usage_prediction %}
-                        {{ forecasting_data.usage_prediction.confidence.title() }}
-                    {% else %}
-                        High
-                    {% endif %}
+            <div class="card border-0 shadow-lg h-100 position-relative overflow-hidden" style="background: linear-gradient(135deg, #2D3748 0%, #4A5568 100%);">
+                <div class="position-absolute top-0 start-0 w-100 h-100" style="background: linear-gradient(135deg, rgba(255, 65, 108, 0.9) 0%, rgba(255, 75, 43, 0.9) 100%);"></div>
+                <div class="card-body position-relative text-white">
+                    <div class="d-flex align-items-center mb-3">
+                        <i class="bi bi-exclamation-triangle fs-3 me-3" style="color: rgba(255, 255, 255, 0.9); text-shadow: 0 1px 3px rgba(0,0,0,0.3);"></i>
+                        <div>
+                            <div class="small mb-1" style="color: rgba(255, 255, 255, 0.8); font-weight: 500; text-shadow: 0 1px 2px rgba(0,0,0,0.2);">Days Until Stockout</div>
+                            <div class="h4 mb-0 fw-bold" style="color: #ffffff; text-shadow: 0 1px 3px rgba(0,0,0,0.4);">
+                                {% if forecasting_data.stockout_prediction and forecasting_data.stockout_prediction.stockout_day %}
+                                    {{ forecasting_data.stockout_prediction.stockout_day }}
+                                {% else %}
+                                    14
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="border-top pt-2" style="border-color: rgba(255, 255, 255, 0.3) !important;">
+                        <small style="color: rgba(255, 255, 255, 0.9); text-shadow: 0 1px 2px rgba(0,0,0,0.2);">
+                            {% set stockout_days = forecasting_data.stockout_prediction.stockout_day if forecasting_data.stockout_prediction else 14 %}
+                            <i class="bi bi-{% if stockout_days <= 7 %}exclamation-triangle{% elif stockout_days <= 14 %}exclamation-circle{% else %}check-circle{% endif %} me-1"></i>
+                            {% if stockout_days <= 7 %}Critical{% elif stockout_days <= 14 %}Warning{% else %}Safe{% endif %}
+                        </small>
+                    </div>
                 </div>
-                <div class="metric-trend positive">
-                    <i class="bi bi-shield-check"></i> 
-                    {% if forecasting_data.usage_analytics %}
-                        {{ "%.0f"|format(forecasting_data.usage_analytics.consistency_score * 100) }}% consistent
-                    {% else %}
-                        Reliable
-                    {% endif %}
+            </div>
+        </div>
+        
+        <div class="col-12 col-sm-6 col-lg-3">
+            <div class="card border-0 shadow-lg h-100 position-relative overflow-hidden" style="background: linear-gradient(135deg, #2D3748 0%, #4A5568 100%);">
+                <div class="position-absolute top-0 start-0 w-100 h-100" style="background: linear-gradient(135deg, rgba(79, 172, 254, 0.9) 0%, rgba(0, 242, 254, 0.9) 100%);"></div>
+                <div class="card-body position-relative text-white">
+                    <div class="d-flex align-items-center mb-3">
+                        <i class="bi bi-shield-check fs-3 me-3" style="color: rgba(255, 255, 255, 0.9); text-shadow: 0 1px 3px rgba(0,0,0,0.3);"></i>
+                        <div>
+                            <div class="small mb-1" style="color: rgba(255, 255, 255, 0.8); font-weight: 500; text-shadow: 0 1px 2px rgba(0,0,0,0.2);">Confidence Level</div>
+                            <div class="h4 mb-0 fw-bold" style="color: #ffffff; text-shadow: 0 1px 3px rgba(0,0,0,0.4);">
+                                {% if forecasting_data.usage_prediction %}
+                                    {{ forecasting_data.usage_prediction.confidence.title() }}
+                                {% else %}
+                                    High
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="border-top pt-2" style="border-color: rgba(255, 255, 255, 0.3) !important;">
+                        <small style="color: rgba(255, 255, 255, 0.9); text-shadow: 0 1px 2px rgba(0,0,0,0.2);">
+                            <i class="bi bi-award me-1"></i>
+                            {% if forecasting_data.usage_analytics %}
+                                {{ "%.0f"|format(forecasting_data.usage_analytics.consistency_score * 100) }}% consistent
+                            {% else %}
+                                Reliable
+                            {% endif %}
+                        </small>
+                    </div>
                 </div>
             </div>
         </div>
@@ -225,10 +216,10 @@
     </div>
     {% endif %}
 
-    <!-- Main Forecasting Content -->
+    <!-- Main Charts Section -->
     <div class="row mb-4">
         <div class="col-lg-8 mb-4">
-            <div class="card border-0 shadow-sm h-100 animate-card">
+            <div class="card border-0 shadow-sm h-100">
                 <div class="card-header bg-gradient-primary text-white">
                     <h5 class="mb-0">
                         <i class="bi bi-graph-up-arrow me-2"></i>Usage Prediction & Analytics
@@ -279,7 +270,7 @@
                         </div>
                         
                         <!-- Usage pattern chart -->
-                        <div class="chart-container" style="height: 300px;">
+                        <div style="height: 300px;">
                             <canvas id="usagePredictionChart"></canvas>
                         </div>
                         
@@ -311,7 +302,7 @@
                             <i class="bi bi-exclamation-triangle" style="font-size: 3rem; color: #ffc107;"></i>
                             <h5 class="mt-3 mb-3">Insufficient Data</h5>
                             <p class="text-muted mb-4">Not enough usage data for prediction. Log more daily usage to enable forecasting.</p>
-                            <button class="btn btn-primary animate-card" onclick="window.location.href='/usage'">
+                            <button class="btn btn-primary" onclick="window.location.href='/usage'">
                                 <i class="bi bi-plus-circle me-2"></i>Add Usage Data
                             </button>
                         </div>
@@ -321,7 +312,7 @@
         </div>
         
         <div class="col-lg-4 mb-4">
-            <div class="card border-0 shadow-sm h-100 animate-card">
+            <div class="card border-0 shadow-sm h-100">
                 <div class="card-header bg-gradient-warning text-white">
                     <h5 class="mb-0">
                         <i class="bi bi-exclamation-triangle me-2"></i>Stockout Analysis
@@ -352,27 +343,8 @@
                             </div>
                         </div>
                         
-                        <!-- Scenario analysis -->
-                        {% if stockout.scenarios %}
-                        <div class="mb-4">
-                            <h6 class="mb-3">Stockout Scenarios</h6>
-                            <div class="row g-2">
-                                {% for scenario_name, scenario in stockout.scenarios.items() %}
-                                <div class="col-12">
-                                    <div class="d-flex justify-content-between align-items-center p-2 border rounded">
-                                        <span class="small text-capitalize">{{ scenario_name }}</span>
-                                        <span class="badge bg-{% if scenario.risk == 'high' %}danger{% elif scenario.risk == 'medium' %}warning{% else %}success{% endif %}">
-                                            {{ scenario.days }} days
-                                        </span>
-                                    </div>
-                                </div>
-                                {% endfor %}
-                            </div>
-                        </div>
-                        {% endif %}
-                        
                         <!-- Weekly projections chart -->
-                        <div class="chart-container" style="height: 200px;">
+                        <div style="height: 200px;">
                             <canvas id="stockoutChart"></canvas>
                         </div>
                     {% else %}
@@ -380,7 +352,7 @@
                             <i class="bi bi-info-circle" style="font-size: 3rem; color: #0dcaf0;"></i>
                             <h5 class="mt-3 mb-3">No Stockout Data</h5>
                             <p class="text-muted mb-4">Stock levels and usage patterns are needed for stockout prediction.</p>
-                            <button class="btn btn-info animate-card" onclick="window.location.href='/inventory'">
+                            <button class="btn btn-info" onclick="window.location.href='/inventory'">
                                 <i class="bi bi-box me-2"></i>Manage Inventory
                             </button>
                         </div>
@@ -393,7 +365,7 @@
     <!-- Additional Analytics Row -->
     <div class="row mb-4">
         <div class="col-lg-6 mb-4">
-            <div class="card border-0 shadow-sm h-100 animate-card">
+            <div class="card border-0 shadow-sm h-100">
                 <div class="card-header bg-gradient-info text-white">
                     <h5 class="mb-0">
                         <i class="bi bi-trending-up me-2"></i>Trend Analysis
@@ -402,7 +374,7 @@
                 <div class="card-body">
                     {% if forecasting_data.trend_analysis %}
                         <!-- Trend comparison chart -->
-                        <div class="chart-container" style="height: 250px;">
+                        <div style="height: 250px;">
                             <canvas id="trendAnalysisChart"></canvas>
                         </div>
                         
@@ -437,7 +409,7 @@
         </div>
         
         <div class="col-lg-6 mb-4">
-            <div class="card border-0 shadow-sm h-100 animate-card">
+            <div class="card border-0 shadow-sm h-100">
                 <div class="card-header bg-gradient-secondary text-white">
                     <h5 class="mb-0">
                         <i class="bi bi-calendar4-range me-2"></i>Seasonal Patterns
@@ -446,7 +418,7 @@
                 <div class="card-body">
                     {% if forecasting_data.seasonal_patterns and forecasting_data.seasonal_patterns.has_seasonal_pattern %}
                         <!-- Seasonal pattern chart -->
-                        <div class="chart-container" style="height: 250px;">
+                        <div style="height: 250px;">
                             <canvas id="seasonalPatternsChart"></canvas>
                         </div>
                         
@@ -482,206 +454,126 @@
     </div>
     
     <!-- AI Reorder Recommendations -->
+    {% if forecasting_data.reorder_recommendation %}
     <div class="row mb-4">
         <div class="col-12">
-            <div class="card border-0 shadow-sm animate-card">
+            <div class="card border-0 shadow-sm">
                 <div class="card-header bg-gradient-success text-white">
                     <h5 class="mb-0">
                         <i class="bi bi-cart-plus me-2"></i>AI Reorder Recommendation
                     </h5>
                 </div>
                 <div class="card-body">
-                    <!-- Enhanced gradient recommendation cards with dynamic data -->
                     <div class="row mb-4">
                         <div class="col-lg-3 col-md-6 mb-3">
-                            <div class="card border-0 shadow-sm h-100 reorder-detail-card gradient-card gradient-purple">
-                                <div class="card-body text-center">
-                                    <div class="bg-white bg-opacity-20 rounded-circle p-3 mb-3 mx-auto" style="width: fit-content;">
-                                        <i class="bi bi-cart-plus fs-2"></i>
-                                    </div>
-                                    <h6 class="text-white-50">Recommended Quantity</h6>
-                                    <h2 class="mb-1">
-                                        {% if forecasting_data.reorder_recommendation %}
-                                            {{ forecasting_data.reorder_recommendation.recommended_quantity }}
-                                        {% else %}
-                                            250
-                                        {% endif %}
-                                    </h2>
-                                    <small class="text-white-50">{{ item.unit if item else 'units' }}</small>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="col-lg-3 col-md-6 mb-3">
-                            <div class="card border-0 shadow-sm h-100 reorder-detail-card gradient-card gradient-pink">
-                                <div class="card-body text-center">
-                                    <div class="bg-white bg-opacity-20 rounded-circle p-3 mb-3 mx-auto" style="width: fit-content;">
-                                        <i class="bi bi-speedometer2 fs-2"></i>
-                                    </div>
-                                    <h6 class="text-white-50">Urgency Level</h6>
-                                    <span class="badge bg-white text-{% if forecasting_data.reorder_recommendation.urgency == 'high' %}danger{% elif forecasting_data.reorder_recommendation.urgency == 'medium' %}warning{% else %}success{% endif %} fs-6">
-                                        {% if forecasting_data.reorder_recommendation %}
-                                            {{ forecasting_data.reorder_recommendation.urgency.title() }}
-                                        {% else %}
-                                            Medium
-                                        {% endif %}
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="col-lg-3 col-md-6 mb-3">
-                            <div class="card border-0 shadow-sm h-100 reorder-detail-card gradient-card gradient-blue">
-                                <div class="card-body text-center">
-                                    <div class="bg-white bg-opacity-20 rounded-circle p-3 mb-3 mx-auto" style="width: fit-content;">
-                                        <i class="bi bi-currency-dollar fs-2"></i>
-                                    </div>
-                                    <h6 class="text-white-50">Estimated Cost</h6>
-                                    <h3 class="mb-1">
-                                        {% if forecasting_data.reorder_recommendation and forecasting_data.reorder_recommendation.cost_analysis %}
-                                            ₹{{ "%.0f"|format(forecasting_data.reorder_recommendation.cost_analysis.estimated_monthly_cost) }}
-                                        {% else %}
-                                            ₹625
-                                        {% endif %}
-                                    </h3>
-                                    <small class="text-white-50">
-                                        {% if forecasting_data.reorder_recommendation and forecasting_data.reorder_recommendation.cost_analysis %}
-                                            ₹{{ "%.2f"|format(forecasting_data.reorder_recommendation.cost_analysis.cost_per_unit) }}/unit
-                                        {% else %}
-                                            ₹2.50/unit
-                                        {% endif %}
-                                    </small>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="col-lg-3 col-md-6 mb-3">
-                            <div class="card border-0 shadow-sm h-100 reorder-detail-card gradient-card gradient-yellow">
-                                <div class="card-body text-center">
-                                    <div class="bg-white bg-opacity-20 rounded-circle p-3 mb-3 mx-auto" style="width: fit-content;">
-                                        <i class="bi bi-check-circle fs-2"></i>
-                                    </div>
-                                    <h6 class="text-white-50">Risk Level</h6>
-                                    {% set risk_level = forecasting_data.stockout_prediction.risk_level if forecasting_data.stockout_prediction else 'medium' %}
-                                    <span class="badge bg-white text-{% if risk_level == 'high' %}danger{% elif risk_level == 'medium' %}warning{% else %}success{% endif %} fs-6">
-                                        {{ risk_level.title() }} Risk
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Enhanced supplier and cost information -->
-                    {% if forecasting_data.reorder_recommendation %}
-                    <div class="row mb-4">
-                        <!-- Supplier recommendations -->
-                        {% if forecasting_data.reorder_recommendation.supplier_recommendations %}
-                        <div class="col-md-6 mb-3">
-                            <div class="card border-0 bg-body-tertiary h-100">
-                                <div class="card-body">
-                                    <h6 class="card-title mb-3">
-                                        <i class="bi bi-truck me-2"></i>Recommended Suppliers
-                                    </h6>
-                                    {% for supplier in forecasting_data.reorder_recommendation.supplier_recommendations %}
-                                    <div class="d-flex justify-content-between align-items-center p-2 border rounded mb-2">
+                            <div class="card border-0 shadow-lg h-100 position-relative overflow-hidden" style="background: linear-gradient(135deg, #2D3748 0%, #4A5568 100%);">
+                                <div class="position-absolute top-0 start-0 w-100 h-100" style="background: linear-gradient(135deg, rgba(102, 126, 234, 0.9) 0%, rgba(118, 75, 162, 0.9) 100%);"></div>
+                                <div class="card-body position-relative text-white">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <i class="bi bi-cart-plus fs-2 me-3" style="color: rgba(255, 255, 255, 0.9); text-shadow: 0 1px 3px rgba(0,0,0,0.3);"></i>
                                         <div>
-                                            <strong>{{ supplier.name }}</strong>
-                                            <br><small class="text-muted">{{ supplier.lead_time }}</small>
+                                            <h6 class="mb-1" style="color: rgba(255, 255, 255, 0.8); font-weight: 500; text-shadow: 0 1px 2px rgba(0,0,0,0.2);">Recommended Quantity</h6>
+                                            <h2 class="mb-0 fw-bold" style="color: #ffffff; text-shadow: 0 1px 3px rgba(0,0,0,0.4);">{{ forecasting_data.reorder_recommendation.recommended_quantity }}</h2>
                                         </div>
-                                        <span class="badge bg-{% if supplier.reliability == 'high' %}success{% elif supplier.reliability == 'medium' %}warning{% else %}secondary{% endif %}">
-                                            {{ supplier.reliability.title() }}
-                                        </span>
                                     </div>
-                                    {% endfor %}
+                                    <div class="border-top pt-2" style="border-color: rgba(255, 255, 255, 0.3) !important;">
+                                        <small style="color: rgba(255, 255, 255, 0.9); text-shadow: 0 1px 2px rgba(0,0,0,0.2);">{{ item.unit if item else 'units' }}</small>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        {% endif %}
                         
-                        <!-- Cost analysis -->
-                        {% if forecasting_data.reorder_recommendation.cost_analysis %}
-                        <div class="col-md-6 mb-3">
-                            <div class="card border-0 bg-body-tertiary h-100">
-                                <div class="card-body">
-                                    <h6 class="card-title mb-3">
-                                        <i class="bi bi-calculator me-2"></i>Cost Analysis
-                                    </h6>
-                                    <div class="row text-center">
-                                        <div class="col-6">
-                                            <h5 class="text-primary mb-0">
-                                                ₹{{ "%.2f"|format(forecasting_data.reorder_recommendation.cost_analysis.cost_per_unit) }}
-                                            </h5>
-                                            <small class="text-muted">Per Unit</small>
-                                        </div>
-                                        <div class="col-6">
-                                            <h5 class="text-success mb-0">
-                                                ₹{{ "%.0f"|format(forecasting_data.reorder_recommendation.cost_analysis.estimated_monthly_cost) }}
-                                            </h5>
-                                            <small class="text-muted">Monthly Est.</small>
+                        <div class="col-lg-3 col-md-6 mb-3">
+                            <div class="card border-0 shadow-lg h-100 position-relative overflow-hidden" style="background: linear-gradient(135deg, #2D3748 0%, #4A5568 100%);">
+                                <div class="position-absolute top-0 start-0 w-100 h-100" style="background: linear-gradient(135deg, rgba(255, 65, 108, 0.9) 0%, rgba(255, 75, 43, 0.9) 100%);"></div>
+                                <div class="card-body position-relative text-white">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <i class="bi bi-speedometer2 fs-2 me-3" style="color: rgba(255, 255, 255, 0.9); text-shadow: 0 1px 3px rgba(0,0,0,0.3);"></i>
+                                        <div>
+                                            <h6 class="mb-1" style="color: rgba(255, 255, 255, 0.8); font-weight: 500; text-shadow: 0 1px 2px rgba(0,0,0,0.2);">Urgency Level</h6>
+                                            <div style="background: rgba(255, 255, 255, 0.95); padding: 4px 12px; border-radius: 6px; display: inline-block;">
+                                                <span class="text-{% if forecasting_data.reorder_recommendation.urgency == 'high' %}danger{% elif forecasting_data.reorder_recommendation.urgency == 'medium' %}warning{% else %}success{% endif %} fw-bold" style="text-shadow: none;">
+                                                    {{ forecasting_data.reorder_recommendation.urgency.title() }}
+                                                </span>
+                                            </div>
                                         </div>
                                     </div>
-                                    {% if forecasting_data.reorder_recommendation.cost_analysis.bulk_discount_available %}
-                                    <div class="alert alert-success mt-3 mb-0">
-                                        <i class="bi bi-tag me-1"></i>
-                                        <small>Bulk discount available for orders over 100 units</small>
-                                    </div>
-                                    {% endif %}
-                                </div>
-                            </div>
-                        </div>
-                        {% endif %}
-                    </div>
-                    
-                    <!-- Optimal timing information -->
-                    {% if forecasting_data.reorder_recommendation.optimal_timing %}
-                    <div class="row mb-4">
-                        <div class="col-12">
-                            <div class="card border-0 bg-gradient-info text-white">
-                                <div class="card-body">
-                                    <h6 class="card-title mb-3">
-                                        <i class="bi bi-clock me-2"></i>Optimal Timing
-                                    </h6>
-                                    <div class="row text-center">
-                                        <div class="col-md-4">
-                                            <div class="mb-2">
-                                                <i class="bi bi-calendar-check fs-4 mb-2 d-block"></i>
-                                                <strong>Optimal Order Date</strong>
-                                                <br><small>{{ forecasting_data.reorder_recommendation.optimal_timing.optimal_order_date }}</small>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="mb-2">
-                                                <i class="bi bi-calendar-x fs-4 mb-2 d-block"></i>
-                                                <strong>Latest Order Date</strong>
-                                                <br><small>{{ forecasting_data.reorder_recommendation.optimal_timing.latest_order_date }}</small>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="mb-2">
-                                                <i class="bi bi-truck fs-4 mb-2 d-block"></i>
-                                                <strong>Delivery Needed</strong>
-                                                <br><small>{{ forecasting_data.reorder_recommendation.optimal_timing.delivery_needed_by }}</small>
-                                            </div>
-                                        </div>
+                                    <div class="border-top pt-2" style="border-color: rgba(255, 255, 255, 0.3) !important;">
+                                        <small style="color: rgba(255, 255, 255, 0.9); text-shadow: 0 1px 2px rgba(0,0,0,0.2);">
+                                            <i class="bi bi-clock me-1"></i>Action required
+                                        </small>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                        
+                        <div class="col-lg-3 col-md-6 mb-3">
+                            <div class="card border-0 shadow-lg h-100 position-relative overflow-hidden" style="background: linear-gradient(135deg, #2D3748 0%, #4A5568 100%);">
+                                <div class="position-absolute top-0 start-0 w-100 h-100" style="background: linear-gradient(135deg, rgba(17, 153, 142, 0.9) 0%, rgba(56, 239, 125, 0.9) 100%);"></div>
+                                <div class="card-body position-relative text-white">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <i class="bi bi-currency-rupee fs-2 me-3" style="color: rgba(255, 255, 255, 0.9); text-shadow: 0 1px 3px rgba(0,0,0,0.3);"></i>
+                                        <div>
+                                            <h6 class="mb-1" style="color: rgba(255, 255, 255, 0.8); font-weight: 500; text-shadow: 0 1px 2px rgba(0,0,0,0.2);">Estimated Cost</h6>
+                                            <h3 class="mb-0 fw-bold" style="color: #ffffff; text-shadow: 0 1px 3px rgba(0,0,0,0.4);">
+                                                {% if forecasting_data.reorder_recommendation.cost_analysis %}
+                                                    ₹{{ "%.0f"|format(forecasting_data.reorder_recommendation.cost_analysis.estimated_monthly_cost) }}
+                                                {% else %}
+                                                    ₹625
+                                                {% endif %}
+                                            </h3>
+                                        </div>
+                                    </div>
+                                    <div class="border-top pt-2" style="border-color: rgba(255, 255, 255, 0.3) !important;">
+                                        <small style="color: rgba(255, 255, 255, 0.9); text-shadow: 0 1px 2px rgba(0,0,0,0.2);">
+                                            {% if forecasting_data.reorder_recommendation.cost_analysis %}
+                                                ₹{{ "%.2f"|format(forecasting_data.reorder_recommendation.cost_analysis.cost_per_unit) }}/unit
+                                            {% else %}
+                                                ₹2.50/unit
+                                            {% endif %}
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-lg-3 col-md-6 mb-3">
+                            <div class="card border-0 shadow-lg h-100 position-relative overflow-hidden" style="background: linear-gradient(135deg, #2D3748 0%, #4A5568 100%);">
+                                <div class="position-absolute top-0 start-0 w-100 h-100" style="background: linear-gradient(135deg, rgba(79, 172, 254, 0.9) 0%, rgba(0, 242, 254, 0.9) 100%);"></div>
+                                <div class="card-body position-relative text-white">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <i class="bi bi-shield-check fs-2 me-3" style="color: rgba(255, 255, 255, 0.9); text-shadow: 0 1px 3px rgba(0,0,0,0.3);"></i>
+                                        <div>
+                                            <h6 class="mb-1" style="color: rgba(255, 255, 255, 0.8); font-weight: 500; text-shadow: 0 1px 2px rgba(0,0,0,0.2);">Risk Level</h6>
+                                            {% set risk_level = forecasting_data.stockout_prediction.risk_level if forecasting_data.stockout_prediction else 'medium' %}
+                                            <div style="background: rgba(255, 255, 255, 0.95); padding: 4px 12px; border-radius: 6px; display: inline-block;">
+                                                <span class="text-{% if risk_level == 'high' %}danger{% elif risk_level == 'medium' %}warning{% else %}success{% endif %} fw-bold" style="text-shadow: none;">
+                                                    {{ risk_level.title() }} Risk
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="border-top pt-2" style="border-color: rgba(255, 255, 255, 0.3) !important;">
+                                        <small style="color: rgba(255, 255, 255, 0.9); text-shadow: 0 1px 2px rgba(0,0,0,0.2);">
+                                            <i class="bi bi-bar-chart me-1"></i>Stock analysis
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    {% endif %}
-                    {% endif %}
                     
                     <!-- Action Buttons -->
                     <div class="row">
                         <div class="col-12">
                             <div class="d-flex justify-content-center gap-3 flex-wrap">
-                                <button class="btn btn-success animate-card" onclick="createReorderRequest()">
+                                <button class="btn btn-success" onclick="createReorderRequest()">
                                     <i class="bi bi-cart-plus me-2"></i>Create Reorder Request
                                 </button>
-                                <button class="btn btn-outline-primary animate-card" onclick="scheduleReorder()">
+                                <button class="btn btn-outline-primary" onclick="scheduleReorder()">
                                     <i class="bi bi-calendar-event me-2"></i>Schedule Reorder
                                 </button>
-                                <button class="btn btn-outline-info animate-card" onclick="exportRecommendation()">
+                                <button class="btn btn-outline-info" onclick="exportRecommendation()">
                                     <i class="bi bi-download me-2"></i>Export Report
                                 </button>
                             </div>
@@ -691,548 +583,366 @@
             </div>
         </div>
     </div>
-    
-    <!-- Item Information -->
-    <div class="row">
-        <div class="col-md-6 mb-4">
-            <div class="card border-0 shadow-sm h-100 animate-card info-card-gradient gradient-purple">
-                <div class="card-body">
-                    <h6 class="card-title mb-4">
-                        <i class="bi bi-box me-2"></i>Item Details
-                    </h6>
-                    <div class="mb-3">
-                        <strong class="text-white-50">Name:</strong><br>
-                        <span class="fs-5">{{ item.name if item else 'Medical Supplies' }}</span>
-                    </div>
-                    <div class="mb-3">
-                        <strong class="text-white-50">Description:</strong><br>
-                        {{ item.description if item else 'Essential medical supplies for orphanage health care' }}
-                    </div>
-                    <div class="mb-3">
-                        <strong class="text-white-50">Category:</strong><br>
-                        <span class="badge bg-white text-dark">{{ item.category if item else 'Medical' }}</span>
-                    </div>
-                    <div class="mb-3">
-                        <strong class="text-white-50">Unit:</strong><br>
-                        {{ item.unit if item else 'pieces' }}
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="col-md-6 mb-4">
-            <div class="card border-0 shadow-sm h-100 animate-card info-card-gradient gradient-blue">
-                <div class="card-body">
-                    <h6 class="card-title mb-4">
-                        <i class="bi bi-graph-up me-2"></i>Current Stock Status
-                    </h6>
-                    <div class="mb-3">
-                        <strong class="text-white-50">Current Stock:</strong><br>
-                        <span class="fs-5">{{ inventory.quantity if inventory else '187' }} {{ item.unit if item else 'pieces' }}</span>
-                    </div>
-                    <div class="mb-3">
-                        <strong class="text-white-50">Minimum Level:</strong><br>
-                        {{ inventory.minimum_level if inventory else '50' }} {{ item.unit if item else 'pieces' }}
-                    </div>
-                    <div class="mb-3">
-                        <strong class="text-white-50">Last Updated:</strong><br>
-                        {{ inventory.last_updated.strftime('%B %d, %Y') if inventory else 'June 1, 2025' }}
-                    </div>
-                    <div class="mb-3">
-                        <strong class="text-white-50">Stock Level:</strong><br>
-                        <div class="progress mt-2" style="height: 20px;">
-                            <div class="progress-bar" role="progressbar" style="width: 75%;">
-                                75%
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    {% endif %}
 {% endblock %}
 
 {% block extra_js %}
 <script>
     // Global chart variables
-    let usagePredictionChart;
-    let stockoutChart;
-    let trendChart;
-    let seasonalChart;
+    let charts = {};
     
-    // Forecasting data from backend
-    const forecastingData = {{ forecasting_data | tojson | safe }};
-    const itemData = {{ item_data | tojson | safe }};
-    const inventoryData = {{ inventory_data | tojson | safe }};
+    // Get data from backend with fallbacks
+    const forecastingData = {% if forecasting_data %}{{ forecasting_data | tojson | safe }}{% else %}{}{% endif %};
+    const itemData = {% if item_data %}{{ item_data | tojson | safe }}{% else %}{}{% endif %};
+    const inventoryData = {% if inventory_data %}{{ inventory_data | tojson | safe }}{% else %}{}{% endif %};
     
-    // Chart initialization
+    // Initialize charts when DOM is ready
     document.addEventListener('DOMContentLoaded', function() {
-        if (typeof Chart !== 'undefined') {
-            Chart.defaults.font.family = "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
-            const isDarkMode = document.documentElement.getAttribute('data-bs-theme') === 'dark';
-            
-            let textColor, gridColor, axisLineColor, legendTextColor, titleColor, tooltipTitleColor, tooltipBodyColor;
-
-            if (isDarkMode) {
-                textColor = 'rgba(255, 255, 255, 0.85)';      // For tick labels
-                gridColor = 'rgba(255, 255, 255, 0.2)';       // For grid lines
-                axisLineColor = 'rgba(255, 255, 255, 0.3)';   // For axis lines themselves
-                legendTextColor = 'rgba(255, 255, 255, 0.9)';  // For legend text
-                titleColor = 'rgba(255, 255, 255, 0.95)';      // For chart titles and axis titles
-                tooltipTitleColor = 'rgba(255, 255, 255, 0.95)';
-                tooltipBodyColor = 'rgba(255, 255, 255, 0.85)';
-            } else { // Light Mode
-                textColor = '#495057';                     // Default body text color
-                gridColor = 'rgba(0, 0, 0, 0.1)';
-                axisLineColor = 'rgba(0, 0, 0, 0.15)';
-                legendTextColor = '#333333';
-                titleColor = '#212529';                     // Darker for titles
-                tooltipTitleColor = '#212529';
-                tooltipBodyColor = '#495057';
-            }
-
-            Chart.defaults.color = textColor; // General default text color (used by tooltips if not overridden)
-
-            // Scales (axes, grid lines, ticks)
-            Chart.defaults.scale = Chart.defaults.scale || {};
-            Chart.defaults.scale.borderColor = axisLineColor; // Color of the axis lines
-
-            Chart.defaults.scale.grid = Chart.defaults.scale.grid || {};
-            Chart.defaults.scale.grid.color = gridColor;    // Color of grid lines
-            Chart.defaults.scale.grid.borderColor = axisLineColor; // Color for border of the grid (often same as axis line)
-
-            Chart.defaults.scale.ticks = Chart.defaults.scale.ticks || {};
-            Chart.defaults.scale.ticks.color = textColor;   // Color of tick labels (e.g., 0, 10, 20 on y-axis)
-
-            // Legend
-            Chart.defaults.plugins = Chart.defaults.plugins || {};
-            Chart.defaults.plugins.legend = Chart.defaults.plugins.legend || {};
-            Chart.defaults.plugins.legend.labels = Chart.defaults.plugins.legend.labels || {};
-            Chart.defaults.plugins.legend.labels.color = legendTextColor;
-
-            // Title (Chart title and Axis titles)
-            Chart.defaults.plugins.title = Chart.defaults.plugins.title || {};
-            Chart.defaults.plugins.title.color = titleColor;
-            
-            // Tooltip
-            Chart.defaults.plugins.tooltip = Chart.defaults.plugins.tooltip || {};
-            Chart.defaults.plugins.tooltip.titleColor = tooltipTitleColor;
-            Chart.defaults.plugins.tooltip.bodyColor = tooltipBodyColor;
-            // Optionally, set tooltip background for better contrast if needed
-            // Chart.defaults.plugins.tooltip.backgroundColor = isDarkMode ? 'rgba(33, 37, 41, 0.9)' : 'rgba(255, 255, 255, 0.9)';
-            // Chart.defaults.plugins.tooltip.borderColor = axisLineColor;
+        console.log('Initializing forecasting charts...');
+        
+        // Check Chart.js availability
+        if (typeof Chart === 'undefined') {
+            console.error('Chart.js not available!');
+            return;
         }
-
-        initializeCharts();
-        updateSummaryCards();
-        initializeInteractiveFeatures();
+        
+        // Configure Chart.js defaults
+        Chart.defaults.font.size = 12;
+        Chart.defaults.color = '#666';
+        
+        // Initialize charts with delay to ensure DOM is ready
+        setTimeout(() => {
+            initializeAllCharts();
+        }, 200);
     });
     
-    function initializeCharts() {
-        // Usage Prediction Chart with dynamic data
-        const ctx1 = document.getElementById('usagePredictionChart');
-        if (ctx1 && forecastingData.usage_prediction) {
-            const weeklyPredictions = forecastingData.usage_prediction.weekly_predictions || [6.2, 7.1, 5.8, 6.9, 7.5, 4.3, 3.7];
-            const predictionRange = forecastingData.usage_prediction.prediction_range || {};
-            
-            usagePredictionChart = new Chart(ctx1, {
-                type: 'line',
-                data: {
-                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-                    datasets: [{
-                        label: 'Predicted Usage',
-                        data: weeklyPredictions,
-                        borderColor: '#667eea',
-                        backgroundColor: 'rgba(102, 126, 234, 0.1)',
-                        borderWidth: 3,
-                        fill: true,
-                        tension: 0.4
-                    }, {
-                        label: 'Max Range',
-                        data: weeklyPredictions.map(val => val * 1.3),
-                        borderColor: '#f093fb',
-                        backgroundColor: 'rgba(240, 147, 251, 0.05)',
-                        borderWidth: 1,
-                        borderDash: [5, 5],
-                        fill: false,
-                        pointRadius: 0
-                    }, {
-                        label: 'Min Range',
-                        data: weeklyPredictions.map(val => val * 0.7),
-                        borderColor: '#4facfe',
-                        backgroundColor: 'rgba(79, 172, 254, 0.05)',
-                        borderWidth: 1,
-                        borderDash: [5, 5],
-                        fill: false,
-                        pointRadius: 0
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    interaction: {
-                        intersect: false,
-                        mode: 'index'
-                    },
-                    plugins: {
-                        legend: {
-                            display: true,
-                            position: 'top'
-                        },
-                        tooltip: {
-                            callbacks: {
-                                title: function(context) {
-                                    const day = context[0].label;
-                                    return `${day} - Predicted Usage`;
-                                },
-                                label: function(context) {
-                                    const unit = itemData ? itemData.unit : 'units';
-                                    return `${context.dataset.label}: ${context.parsed.y.toFixed(1)} ${unit}`;
-                                }
-                            }
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            title: {
-                                display: true,
-                                text: `Usage (${itemData ? itemData.unit : 'units'})`
-                            }
-                        },
-                        x: {
-                            title: {
-                                display: true,
-                                text: 'Days of Week'
-                            }
-                        }
-                    },
-                    elements: {
-                        point: {
-                            radius: 6,
-                            hoverRadius: 8
-                        }
-                    }
-                }
-            });
-        }
-        
-        // Enhanced Stockout Chart with projections
-        const ctx2 = document.getElementById('stockoutChart');
-        if (ctx2 && forecastingData.stockout_prediction) {
-            const stockData = forecastingData.stockout_prediction;
-            const projections = stockData.weekly_projections || [];
-            const currentStock = stockData.current_stock || 150;
-            const minLevel = inventoryData ? inventoryData.minimum_level : 50;
-            
-            // Prepare data for weekly projections
-            const stockLevels = [currentStock];
-            const labels = ['Start'];
-            
-            projections.forEach((proj, index) => {
-                labels.push(`Day ${proj.day}`);
-                stockLevels.push(proj.remaining_stock);
-            });
-            
-            stockoutChart = new Chart(ctx2, {
-                type: 'line',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'Stock Level',
-                        data: stockLevels,
-                        borderColor: '#ff6b6b',
-                        backgroundColor: 'rgba(255, 107, 107, 0.1)',
-                        borderWidth: 3,
-                        fill: true,
-                        tension: 0.4
-                    }, {
-                        label: 'Minimum Level',
-                        data: new Array(labels.length).fill(minLevel),
-                        borderColor: '#ffc107',
-                        borderDash: [5, 5],
-                        borderWidth: 2,
-                        pointRadius: 0,
-                        fill: false
-                    }, {
-                        label: 'Critical Level',
-                        data: new Array(labels.length).fill(minLevel * 0.5),
-                        borderColor: '#dc3545',
-                        borderDash: [10, 5],
-                        borderWidth: 2,
-                        pointRadius: 0,
-                        fill: false
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    interaction: {
-                        intersect: false,
-                        mode: 'index'
-                    },
-                    plugins: {
-                        legend: {
-                            display: true,
-                            position: 'top'
-                        },
-                        tooltip: {
-                            callbacks: {
-                                title: function(context) {
-                                    return `${context[0].label} Stock Level`;
-                                },
-                                label: function(context) {
-                                    const unit = itemData ? itemData.unit : 'units';
-                                    return `${context.dataset.label}: ${Math.round(context.parsed.y)} ${unit}`;
-                                }
-                            }
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            title: {
-                                display: true,
-                                text: `Stock Level (${itemData ? itemData.unit : 'units'})`
-                            }
-                        },
-                        x: {
-                            title: {
-                                display: true,
-                                text: 'Timeline'
-                            }
-                        }
-                    },
-                    elements: {
-                        point: {
-                            radius: 4,
-                            hoverRadius: 6
-                        }
-                    }
-                });
-        }
-        
-        // Add trend analysis chart
-        initializeTrendChart();
-        
-        // Add seasonal patterns chart
-        initializeSeasonalChart();
-    }
-    
-    function initializeTrendChart() {
-        // Add trend analysis chart if we have a container for it
-        const trendContainer = document.getElementById('trendAnalysisChart');
-        if (trendContainer && forecastingData.trend_analysis) {
-            const trendData = forecastingData.trend_analysis;
-            const comparison = trendData.period_comparison;
-            
-            trendChart = new Chart(trendContainer, {
-                type: 'bar',
-                data: {
-                    labels: ['Previous Period', 'Current Period'],
-                    datasets: [{
-                        label: 'Average Daily Usage',
-                        data: [comparison.previous_period_avg, comparison.current_period_avg],
-                        backgroundColor: [
-                            'rgba(102, 126, 234, 0.7)',
-                            'rgba(240, 147, 251, 0.7)'
-                        ],
-                        borderColor: [
-                            '#667eea',
-                            '#f093fb'
-                        ],
-                        borderWidth: 2
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            display: false
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    const unit = itemData ? itemData.unit : 'units';
-                                    return `${context.parsed.y.toFixed(1)} ${unit}/day`;
-                                }
-                            }
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            title: {
-                                display: true,
-                                text: `Daily Usage (${itemData ? itemData.unit : 'units'})`
-                            }
-                        }
-                    }
-                });
+    function initializeAllCharts() {
+        try {
+            createUsagePredictionChart();
+            createStockoutChart();
+            createTrendChart();
+            createSeasonalChart();
+            console.log('All forecasting charts initialized successfully');
+        } catch (error) {
+            console.error('Error initializing charts:', error);
         }
     }
     
-    function initializeSeasonalChart() {
-        // Add seasonal patterns chart if we have a container for it
-        const seasonalContainer = document.getElementById('seasonalPatternsChart');
-        if (seasonalContainer && forecastingData.seasonal_patterns) {
-            const seasonalData = forecastingData.seasonal_patterns;
-            const monthlyPatterns = seasonalData.monthly_patterns;
-            
-            if (monthlyPatterns && Object.keys(monthlyPatterns).length > 0) {
-                const months = Object.keys(monthlyPatterns);
-                const values = Object.values(monthlyPatterns);
-                
-                seasonalChart = new Chart(seasonalContainer, {
-                    type: 'line',
-                    data: {
-                        labels: months.map(m => m.charAt(0).toUpperCase() + m.slice(1)),
-                        datasets: [{
-                            label: 'Seasonal Factor',
-                            data: values,
-                            borderColor: '#4facfe',
-                            backgroundColor: 'rgba(79, 172, 254, 0.1)',
-                            borderWidth: 3,
-                            fill: true,
-                            tension: 0.4
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: {
-                                display: false
-                            },
-                            tooltip: {
-                                callbacks: {
-                                    label: function(context) {
-                                        return `Factor: ${context.parsed.y.toFixed(2)}x`;
-                                    }
-                                }
-                            }
-                        },
-                        scales: {
-                            y: {
-                                beginAtZero: false,
-                                title: {
-                                    display: true,
-                                    text: 'Usage Factor'
-                                }
-                            },
-                            x: {
-                                title: {
-                                    display: true,
-                                    text: 'Month'
-                                }
-                            }
-                        }
-                    }
-                });
-            }
-        }
-    }
-    
-    function initializeInteractiveFeatures() {
-        // Add chart update functionality
-        // The Chart.defaults for font and color are now set in DOMContentLoaded, so no need to repeat here.
+    function createUsagePredictionChart() {
+        const canvas = document.getElementById('usagePredictionChart');
+        if (!canvas) return;
         
-        // Mobile-friendly chart interactions
-        if (window.innerWidth <= 768) {
-            // Adjust chart options for mobile
-            const mobileOptions = {
+        // Get data with fallbacks
+        const weeklyPredictions = forecastingData.usage_prediction && forecastingData.usage_prediction.weekly_predictions
+            ? forecastingData.usage_prediction.weekly_predictions
+            : [6.2, 7.1, 5.8, 6.9, 7.5, 4.3, 3.7];
+        
+        const ctx = canvas.getContext('2d');
+        
+        charts.usage = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                datasets: [{
+                    label: 'Predicted Usage',
+                    data: weeklyPredictions,
+                    borderColor: '#667eea',
+                    backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.4,
+                    pointRadius: 5,
+                    pointHoverRadius: 7
+                }, {
+                    label: 'Max Range',
+                    data: weeklyPredictions.map(val => val * 1.3),
+                    borderColor: 'rgba(240, 147, 251, 0.7)',
+                    backgroundColor: 'rgba(240, 147, 251, 0.05)',
+                    borderWidth: 1,
+                    borderDash: [5, 5],
+                    fill: false,
+                    pointRadius: 0
+                }, {
+                    label: 'Min Range',
+                    data: weeklyPredictions.map(val => val * 0.7),
+                    borderColor: 'rgba(79, 172, 254, 0.7)',
+                    backgroundColor: 'rgba(79, 172, 254, 0.05)',
+                    borderWidth: 1,
+                    borderDash: [5, 5],
+                    fill: false,
+                    pointRadius: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: {
+                    intersect: false,
+                    mode: 'index'
+                },
                 plugins: {
                     legend: {
-                        position: 'bottom',
-                        labels: {
-                            fontSize: 12,
-                            usePointStyle: true
+                        display: true,
+                        position: 'top'
+                    },
+                    tooltip: {
+                        callbacks: {
+                            title: function(context) {
+                                return `${context[0].label} - Predicted Usage`;
+                            },
+                            label: function(context) {
+                                const unit = itemData ? itemData.unit : 'units';
+                                return `${context.dataset.label}: ${context.parsed.y.toFixed(1)} ${unit}`;
+                            }
                         }
                     }
                 },
-                elements: {
-                    point: {
-                        radius: 4,
-                        hoverRadius: 6
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: `Usage (${itemData ? itemData.unit : 'units'})`
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Days of Week'
+                        }
                     }
                 }
-            };
-            
-            // Apply mobile options to existing charts
-            if (usagePredictionChart) {
-                Object.assign(usagePredictionChart.options, mobileOptions);
-                usagePredictionChart.update();
             }
-            
-            if (stockoutChart) {
-                Object.assign(stockoutChart.options, mobileOptions);
-                stockoutChart.update();
-            }
-        }
-        
-        // Add touch-friendly interactions
-        document.addEventListener('touchstart', function() {}, {passive: true});
+        });
     }
     
-    function updateSummaryCards() {
-        // Update summary cards with animation
-        const cards = document.querySelectorAll('.animate-card');
-        cards.forEach((card, index) => {
-            setTimeout(() => {
-                card.style.opacity = '1';
-                card.style.transform = 'translateY(0)';
-            }, index * 100);
+    function createStockoutChart() {
+        const canvas = document.getElementById('stockoutChart');
+        if (!canvas) return;
+        
+        // Get data with fallbacks
+        const hasStockoutPrediction = forecastingData && forecastingData.stockout_prediction;
+        const stockData = hasStockoutPrediction ? forecastingData.stockout_prediction : {};
+        const projections = stockData.weekly_projections || [
+            {day: 1, remaining_stock: 43.8},
+            {day: 2, remaining_stock: 36.7},
+            {day: 3, remaining_stock: 30.9},
+            {day: 4, remaining_stock: 24.0},
+            {day: 5, remaining_stock: 16.5},
+            {day: 6, remaining_stock: 12.2},
+            {day: 7, remaining_stock: 8.5}
+        ];
+        
+        const currentStock = stockData.current_stock || 50;
+        const minLevel = inventoryData ? inventoryData.minimum_level : 20;
+        
+        // Prepare data
+        const stockLevels = [currentStock];
+        const labels = ['Start'];
+        
+        projections.forEach((proj, index) => {
+            labels.push(`Day ${proj.day}`);
+            stockLevels.push(proj.remaining_stock);
         });
         
-        // Update cards with real-time data
-        updateRealTimeMetrics();
+        const ctx = canvas.getContext('2d');
+        
+        charts.stockout = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Stock Level',
+                    data: stockLevels,
+                    borderColor: '#ff6b6b',
+                    backgroundColor: 'rgba(255, 107, 107, 0.1)',
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.4,
+                    pointRadius: 4,
+                    pointHoverRadius: 6
+                }, {
+                    label: 'Minimum Level',
+                    data: new Array(labels.length).fill(minLevel),
+                    borderColor: '#ffc107',
+                    borderDash: [5, 5],
+                    borderWidth: 2,
+                    pointRadius: 0,
+                    fill: false
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: {
+                    intersect: false,
+                    mode: 'index'
+                },
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top'
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const unit = itemData ? itemData.unit : 'units';
+                                return `${context.dataset.label}: ${Math.round(context.parsed.y)} ${unit}`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: `Stock Level (${itemData ? itemData.unit : 'units'})`
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Timeline'
+                        }
+                    }
+                }
+            }
+        });
     }
     
-    function updateRealTimeMetrics() {
-        // Update forecast accuracy
-        if (forecastingData.accuracy) {
-            const accuracyElement = document.getElementById('forecastAccuracy');
-            if (accuracyElement) {
-                accuracyElement.textContent = `${forecastingData.accuracy.toFixed(1)}%`;
-            }
-        }
+    function createTrendChart() {
+        const canvas = document.getElementById('trendAnalysisChart');
+        if (!canvas) return;
         
-        // Update predicted usage
-        if (forecastingData.usage_prediction) {
-            const usageElement = document.getElementById('predictedUsage');
-            if (usageElement) {
-                usageElement.textContent = forecastingData.usage_prediction.total_predicted.toFixed(1);
-            }
-        }
+        // Get data with fallbacks
+        const hasTrendData = forecastingData && forecastingData.trend_analysis;
+        const trendData = hasTrendData ? forecastingData.trend_analysis : {};
+        const comparison = trendData.period_comparison || {
+            previous_period_avg: 5.4,
+            current_period_avg: 5.5
+        };
         
-        // Update stockout days
-        if (forecastingData.stockout_prediction) {
-            const stockoutElement = document.getElementById('daysUntilStockout');
-            if (stockoutElement) {
-                stockoutElement.textContent = forecastingData.stockout_prediction.stockout_day;
-            }
-        }
+        const ctx = canvas.getContext('2d');
         
-        // Update confidence level
-        if (forecastingData.usage_prediction) {
-            const confidenceElement = document.getElementById('confidenceLevel');
-            if (confidenceElement) {
-                confidenceElement.textContent = forecastingData.usage_prediction.confidence.charAt(0).toUpperCase() + 
-                    forecastingData.usage_prediction.confidence.slice(1);
+        charts.trend = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Previous Period', 'Current Period'],
+                datasets: [{
+                    label: 'Average Daily Usage',
+                    data: [comparison.previous_period_avg, comparison.current_period_avg],
+                    backgroundColor: [
+                        'rgba(102, 126, 234, 0.7)',
+                        'rgba(240, 147, 251, 0.7)'
+                    ],
+                    borderColor: [
+                        '#667eea',
+                        '#f093fb'
+                    ],
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const unit = itemData ? itemData.unit : 'units';
+                                return `${context.parsed.y.toFixed(1)} ${unit}/day`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: `Daily Usage (${itemData ? itemData.unit : 'units'})`
+                        }
+                    }
+                }
             }
-        }
+        });
     }
     
-    // Enhanced utility functions
+    function createSeasonalChart() {
+        const canvas = document.getElementById('seasonalPatternsChart');
+        if (!canvas) return;
+        
+        // Get data with fallbacks
+        const hasSeasonalData = forecastingData && forecastingData.seasonal_patterns;
+        const seasonalData = hasSeasonalData ? forecastingData.seasonal_patterns : {};
+        const monthlyPatterns = seasonalData.monthly_patterns || {
+            'jan': 1.2, 'feb': 1.15, 'mar': 1.0, 'apr': 0.9,
+            'may': 0.85, 'jun': 0.8, 'jul': 0.75, 'aug': 0.8,
+            'sep': 0.95, 'oct': 1.05, 'nov': 1.1, 'dec': 1.25
+        };
+        
+        const months = Object.keys(monthlyPatterns);
+        const values = Object.values(monthlyPatterns);
+        
+        const ctx = canvas.getContext('2d');
+        
+        charts.seasonal = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: months.map(m => m.charAt(0).toUpperCase() + m.slice(1)),
+                datasets: [{
+                    label: 'Seasonal Factor',
+                    data: values,
+                    borderColor: '#4facfe',
+                    backgroundColor: 'rgba(79, 172, 254, 0.1)',
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.4,
+                    pointRadius: 4,
+                    pointHoverRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return `Factor: ${context.parsed.y.toFixed(2)}x`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: false,
+                        title: {
+                            display: true,
+                            text: 'Usage Factor'
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Month'
+                        }
+                    }
+                }
+            }
+        });
+    }
+    
+    // Utility functions
     function refreshForecasting() {
         showAlert('Refreshing forecasting data...', 'info');
-        
-        // Add loading spinner to charts
-        document.querySelectorAll('canvas').forEach(canvas => {
-            canvas.style.opacity = '0.5';
-        });
-        
         setTimeout(() => {
             window.location.reload();
         }, 1000);
@@ -1241,7 +951,6 @@
     function exportForecastData() {
         showAlert('Preparing forecast export...', 'info');
         
-        // Create export data
         const exportData = {
             item: itemData,
             inventory: inventoryData,
@@ -1250,7 +959,6 @@
             export_type: 'forecast_report'
         };
         
-        // Create downloadable JSON file
         const dataStr = JSON.stringify(exportData, null, 2);
         const dataBlob = new Blob([dataStr], {type: 'application/json'});
         const url = URL.createObjectURL(dataBlob);
@@ -1277,8 +985,6 @@
         
         if (confirm(confirmMsg)) {
             showAlert('Creating reorder request...', 'info');
-            
-            // Simulate API call
             setTimeout(() => {
                 showAlert(`Reorder request created for ${reorder.recommended_quantity} ${itemData ? itemData.unit : 'units'}`, 'success');
             }, 1500);
@@ -1287,8 +993,6 @@
     
     function scheduleReorder() {
         showAlert('Opening reorder scheduler...', 'info');
-        
-        // This would open a modal or redirect to scheduling page
         setTimeout(() => {
             showAlert('Reorder scheduling feature coming soon!', 'info');
         }, 1000);
@@ -1302,7 +1006,6 @@
         
         showAlert('Exporting recommendation report...', 'info');
         
-        // Create recommendation report
         const reportData = {
             item: itemData,
             current_stock: inventoryData ? inventoryData.quantity : 0,
@@ -1328,15 +1031,10 @@
     }
     
     function adjustForecastPeriod() {
-        const periods = ['7 days', '14 days', '30 days', '60 days'];
-        const currentPeriod = '7 days'; // This would come from settings
-        
-        const newPeriod = prompt(`Current forecast period: ${currentPeriod}\nSelect new period (7, 14, 30, or 60 days):`, '7');
+        const newPeriod = prompt('Current forecast period: 7 days\nSelect new period (7, 14, 30, or 60 days):', '7');
         
         if (newPeriod && ['7', '14', '30', '60'].includes(newPeriod)) {
             showAlert(`Updating forecast period to ${newPeriod} days...`, 'info');
-            
-            // This would make an API call to update the setting
             setTimeout(() => {
                 showAlert(`Forecast period updated to ${newPeriod} days`, 'success');
             }, 1000);
@@ -1345,33 +1043,9 @@
     
     function configureAlerts() {
         showAlert('Opening alert configuration...', 'info');
-        
-        // This would open a modal or redirect to alert settings
         setTimeout(() => {
             showAlert('Alert configuration feature coming soon!', 'info');
         }, 1000);
     }
-    
-    function viewForecastHistory() {
-        showAlert('Loading forecast history...', 'info');
-        
-        // This would redirect to history page or open a modal
-        setTimeout(() => {
-            showAlert('Forecast history feature coming soon!', 'info');
-        }, 1000);
-    }
-    
-    // Real-time data refresh
-    function enableRealTimeUpdates() {
-        // Refresh data every 5 minutes
-        setInterval(() => {
-            if (document.visibilityState === 'visible') {
-                updateRealTimeMetrics();
-            }
-        }, 300000);
-    }
-    
-    // Initialize real-time updates
-    setTimeout(enableRealTimeUpdates, 5000);
 </script>
 {% endblock %}

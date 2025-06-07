@@ -146,7 +146,7 @@ class ForecastingEngine:
         # Get usage prediction
         forecast = self.predict_usage(orphanage_id, item_id, forecast_days)
         
-        current_stock = inventory.quantity
+        current_stock = inventory.quantity if inventory.quantity is not None else 0
         daily_predictions = forecast['predictions']
         
         # Calculate day-by-day stock levels
@@ -191,26 +191,29 @@ class ForecastingEngine:
         
         # Get 30-day usage forecast
         forecast = self.predict_usage(orphanage_id, item_id, 30)
-        stockout_prediction = self.predict_stockout(orphanage_id, item_id, 30)
+        stockout_prediction = self.predict_stockout(orphanage_id, item_id, 30) # This can be None
         
         # Calculate recommended order quantity
         monthly_usage = forecast['total_predicted']
-        current_stock = inventory.quantity
-        minimum_level = inventory.minimum_level
+        current_stock = inventory.quantity if inventory.quantity is not None else 0
+        minimum_level = inventory.minimum_level if inventory.minimum_level is not None else 0
         
         # Safety stock (1.5x minimum level)
         safety_stock = minimum_level * 1.5
         
+        reorder_quantity = 0
+        urgency = 'low' # Default urgency
+
         # Recommended order quantity
-        if stockout_prediction['stockout_day']:
+        if stockout_prediction and stockout_prediction.get('stockout_day') is not None:
             # Urgent reorder needed
             days_to_stockout = stockout_prediction['stockout_day']
             reorder_quantity = monthly_usage + safety_stock - current_stock
             urgency = 'urgent' if days_to_stockout <= 3 else 'high'
         else:
-            # Regular reorder
+            # Regular reorder or stockout_prediction is None or stockout_day is None
             reorder_quantity = max(0, (monthly_usage + safety_stock) - current_stock)
-            urgency = 'medium' if current_stock <= minimum_level else 'low'
+            urgency = 'medium' if current_stock <= minimum_level else 'low' # This comparison is now safe
         
         return {
             'item_name': inventory.item.name,
@@ -219,8 +222,8 @@ class ForecastingEngine:
             'predicted_monthly_usage': monthly_usage,
             'recommended_quantity': max(0, reorder_quantity),
             'urgency': urgency,
-            'stockout_risk': stockout_prediction['stockout_day'] is not None,
-            'stockout_date': stockout_prediction['stockout_date'],
+            'stockout_risk': stockout_prediction.get('stockout_day') is not None if stockout_prediction else False,
+            'stockout_date': stockout_prediction.get('stockout_date') if stockout_prediction else None,
             'confidence': forecast['confidence']
         }
     

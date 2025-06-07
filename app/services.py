@@ -281,24 +281,25 @@ class InventoryService:
             if not stockout_prediction and inventory:
                 # Enhanced stockout calculation with scenarios
                 avg_daily = usage_prediction.get('daily_average', 0)
+                current_stock = inventory.quantity if inventory.quantity is not None else 0
                 stockout_scenarios = InventoryService._calculate_stockout_scenarios(
-                    inventory.quantity, avg_daily, usage_prediction.get('prediction_range', {})
+                    current_stock, avg_daily, usage_prediction.get('prediction_range', {})
                 )
                 
-                if avg_daily > 0:
-                    days_remaining = inventory.quantity / avg_daily
+                if avg_daily > 0 and current_stock > 0:
+                    days_remaining = current_stock / avg_daily
                     stockout_prediction = {
-                        'current_stock': inventory.quantity,
+                        'current_stock': current_stock,
                         'stockout_day': int(days_remaining),
                         'risk_level': 'high' if days_remaining < 7 else 'medium' if days_remaining < 14 else 'low',
                         'scenarios': stockout_scenarios,
                         'weekly_projections': InventoryService._get_weekly_stock_projections(
-                            inventory.quantity, usage_prediction.get('weekly_predictions', [])
+                            current_stock, usage_prediction.get('weekly_predictions', [])
                         )
                     }
                 else:
                     stockout_prediction = {
-                        'current_stock': inventory.quantity,
+                        'current_stock': current_stock,
                         'stockout_day': 30,  # Default safe value
                         'risk_level': 'low',
                         'scenarios': stockout_scenarios,
@@ -515,7 +516,11 @@ class InventoryService:
     @staticmethod
     def _calculate_stockout_scenarios(current_stock, avg_daily, prediction_range):
         """Calculate different stockout scenarios"""
-        if avg_daily == 0:
+        # Ensure current_stock is not None
+        current_stock = current_stock if current_stock is not None else 0
+        avg_daily = avg_daily if avg_daily is not None else 0
+        
+        if avg_daily == 0 or current_stock == 0:
             return {
                 'optimistic': {'days': 999, 'risk': 'very_low'},
                 'realistic': {'days': 999, 'risk': 'very_low'},

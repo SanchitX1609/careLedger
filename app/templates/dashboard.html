@@ -191,8 +191,8 @@
             </div>
         </div>
         
-        <!-- Recent Usage -->
-        <div class="col-lg-6 mb-4">
+        <!-- Recent Usage - Made Smaller -->
+        <div class="col-lg-4 mb-4">
             <div class="card shadow-sm border-0 h-100">
                 <div class="card-header bg-gradient-info text-white">
                     <h5 class="mb-0">
@@ -202,24 +202,31 @@
                 <div class="card-body">
                     {% if data.recent_usage %}
                         <div class="list-group list-group-flush">
-                            {% for log in data.recent_usage %}
-                                <div class="list-group-item border-0">
-                                    <div class="d-flex justify-content-between align-items-center flex-wrap">
-                                        <div class="mb-1 mb-sm-0">
-                                            <strong>{{ log.item.name }}</strong>
-                                            <small class="text-muted d-block d-sm-inline ms-sm-2">{{ log.date.strftime('%B %d, %Y') }}</small>
+                            {% for log in data.recent_usage[:5] %}
+                                <div class="list-group-item border-0 py-2">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div class="flex-grow-1 min-width-0">
+                                            <div class="fw-semibold text-truncate">{{ log.item.name }}</div>
+                                            <small class="text-muted">{{ log.date.strftime('%m/%d') }}</small>
                                         </div>
-                                        <div class="text-end">
+                                        <div class="text-end ms-2">
                                             <span class="badge bg-secondary">{{ log.quantity_used }} {{ log.item.unit }}</span>
                                         </div>
                                     </div>
                                 </div>
                             {% endfor %}
                         </div>
+                        {% if data.recent_usage|length > 5 %}
+                            <div class="text-center mt-2">
+                                <a href="{{ url_for('main.usage') }}" class="btn btn-sm btn-outline-info">
+                                    View All ({{ data.recent_usage|length }})
+                                </a>
+                            </div>
+                        {% endif %}
                     {% else %}
-                        <div class="text-center text-muted py-4">
-                            <i class="bi bi-clipboard-x fs-1"></i>
-                            <p class="mt-2">No recent usage recorded</p>
+                        <div class="text-center text-muted py-3">
+                            <i class="bi bi-clipboard-x fs-4"></i>
+                            <p class="mt-2 mb-0 small">No recent usage</p>
                         </div>
                     {% endif %}
                 </div>
@@ -227,7 +234,7 @@
         </div>
     </div>
     
-    <!-- Category Statistics -->
+    <!-- Category Statistics - Made Larger -->
     <div class="row">
         <div class="col-lg-8 mb-4">
             <div class="card shadow-sm border-0">

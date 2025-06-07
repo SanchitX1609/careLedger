@@ -157,6 +157,12 @@ def api_forecasting(orphanage_id, item_id):
     forecasting_data = InventoryService.get_forecasting_data(orphanage_id, item_id)
     return jsonify(forecasting_data)
 
+@main_bp.route('/chart-test')
+def chart_test():
+    """Test page for charts"""
+    return render_template('chart_test.html')
+
+
 @main_bp.route('/alerts')
 @login_required
 def alerts():

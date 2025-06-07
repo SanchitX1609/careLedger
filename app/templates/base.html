@@ -8,6 +8,8 @@
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Custom CSS for improved contrast and readability -->
+    <link href="{{ url_for('static', filename='css/improved-contrast.css') }}" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         body {
@@ -116,6 +118,104 @@
             }
         }
         
+        /* IMPROVED HIGH CONTRAST METRIC CARDS */
+        .metric-card-enhanced {
+            position: relative;
+            overflow: hidden;
+            border: none !important;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15) !important;
+            transition: all 0.3s ease;
+        }
+        
+        .metric-card-enhanced:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(0,0,0,0.25) !important;
+        }
+        
+        .metric-card-enhanced .metric-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            opacity: 0.9;
+        }
+        
+        .metric-card-enhanced .card-body {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .metric-card-enhanced .metric-value {
+            color: #ffffff !important;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+            font-weight: 700;
+        }
+        
+        .metric-card-enhanced .metric-label {
+            color: rgba(255, 255, 255, 0.85) !important;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.4);
+            font-weight: 500;
+        }
+        
+        .metric-card-enhanced .metric-icon {
+            color: rgba(255, 255, 255, 0.9) !important;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+        }
+        
+        .metric-card-enhanced .metric-subtitle {
+            color: rgba(255, 255, 255, 0.8) !important;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+        }
+        
+        .metric-card-enhanced .metric-border {
+            border-color: rgba(255, 255, 255, 0.3) !important;
+        }
+        
+        /* Gradient backgrounds for different card types */
+        .bg-gradient-primary-enhanced {
+            background: linear-gradient(135deg, #2D3748 0%, #4A5568 100%);
+        }
+        .bg-gradient-primary-enhanced .metric-overlay {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.9) 0%, rgba(118, 75, 162, 0.9) 100%);
+        }
+        
+        .bg-gradient-success-enhanced {
+            background: linear-gradient(135deg, #2D3748 0%, #4A5568 100%);
+        }
+        .bg-gradient-success-enhanced .metric-overlay {
+            background: linear-gradient(135deg, rgba(17, 153, 142, 0.9) 0%, rgba(56, 239, 125, 0.9) 100%);
+        }
+        
+        .bg-gradient-danger-enhanced {
+            background: linear-gradient(135deg, #2D3748 0%, #4A5568 100%);
+        }
+        .bg-gradient-danger-enhanced .metric-overlay {
+            background: linear-gradient(135deg, rgba(255, 65, 108, 0.9) 0%, rgba(255, 75, 43, 0.9) 100%);
+        }
+        
+        .bg-gradient-info-enhanced {
+            background: linear-gradient(135deg, #2D3748 0%, #4A5568 100%);
+        }
+        .bg-gradient-info-enhanced .metric-overlay {
+            background: linear-gradient(135deg, rgba(79, 172, 254, 0.9) 0%, rgba(0, 242, 254, 0.9) 100%);
+        }
+        
+        .bg-gradient-warning-enhanced {
+            background: linear-gradient(135deg, #2D3748 0%, #4A5568 100%);
+        }
+        .bg-gradient-warning-enhanced .metric-overlay {
+            background: linear-gradient(135deg, rgba(251, 218, 97, 0.9) 0%, rgba(255, 90, 205, 0.9) 100%);
+        }
+        
+        .bg-gradient-secondary-enhanced {
+            background: linear-gradient(135deg, #2D3748 0%, #4A5568 100%);
+        }
+        .bg-gradient-secondary-enhanced .metric-overlay {
+            background: linear-gradient(135deg, rgba(108, 117, 125, 0.9) 0%, rgba(73, 80, 87, 0.9) 100%);
+        }
+        
+        /* Original gradient styles for backwards compatibility */
         .bg-gradient-primary {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
         }
@@ -540,243 +640,80 @@
             }
         }
         
-        /* REDESIGNED UI SYSTEM - Professional Components */
-        :root {
-            --bg-primary: #0f172a;
-            --bg-secondary: #1e293b;
-            --bg-tertiary: #334155;
-            --text-primary: #f8fafc;
-            --text-secondary: #cbd5e1;
-            --text-tertiary: #64748b;
-            --primary-refined: #3b82f6;
-            --success-refined: #10b981;
-            --warning-refined: #f59e0b;
-            --danger-refined: #ef4444;
+        /* Dark mode specific improvements for better contrast */
+        [data-bs-theme="dark"] .alert-danger { 
+            background-color: var(--bs-danger-bg-subtle-dark, #dc3545); 
+            border-color: var(--bs-danger-border-subtle-dark, #dc3545); 
+            color: var(--bs-danger-text-emphasis-dark, white); 
         }
         
-        .metric-card-compact {
-            background: var(--bg-secondary);
-            border: 1px solid rgba(148, 163, 184, 0.1);
-            border-radius: 12px;
-            padding: 1rem;
-            transition: all 0.2s ease;
-            height: 100%;
-        }
-        
-        .metric-card-compact:hover {
-            background: var(--bg-tertiary);
-            border-color: rgba(148, 163, 184, 0.2);
-            transform: translateY(-1px);
-        }
-        
-        .metric-value {
-            font-size: 1.75rem;
-            font-weight: 700;
-            color: var(--text-primary);
-            line-height: 1;
-            margin-bottom: 0.5rem;
-        }
-        
-        .metric-label {
-            font-size: 0.875rem;
-            color: var(--text-secondary);
-            font-weight: 500;
-            margin-bottom: 0.5rem;
-        }
-        
-        .metric-trend {
-            font-size: 0.75rem;
-            font-weight: 600;
-            padding: 2px 6px;
-            border-radius: 4px;
-            display: inline-flex;
-            align-items: center;
-            gap: 2px;
-        }
-        
-        .metric-trend.positive {
-            background: rgba(16, 185, 129, 0.1);
-            color: var(--success-refined);
-        }
-        
-        .metric-trend.negative {
-            background: rgba(239, 68, 68, 0.1);
-            color: var(--danger-refined);
-        }
-        
-        .metric-trend.neutral {
-            background: rgba(148, 163, 184, 0.1);
-            color: var(--text-tertiary);
-        }
-        
-        .metric-status {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-        }
-        
-        .metric-status.success { background: var(--success-refined); }
-        .metric-status.warning { background: var(--warning-refined); }
-        .metric-status.danger { background: var(--danger-refined); }
-        
-        .section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-            padding-bottom: 0.75rem;
-            border-bottom: 1px solid rgba(148, 163, 184, 0.1);
-        }
-        
-        .btn-compact {
-            padding: 6px 12px;
-            font-size: 0.875rem;
-            font-weight: 500;
-            border-radius: 6px;
-            border: none;
-            transition: all 0.2s ease;
-        }
-        
-        .btn-primary-refined {
-            background: var(--primary-refined);
-            color: white;
-        }
-        
-        .btn-primary-refined:hover {
-            background: #2563eb;
-            color: white;
-            transform: translateY(-1px);
-        }
-        
-        .btn-secondary-refined {
-            background: var(--bg-tertiary);
-            color: var(--text-secondary);
-            border: 1px solid rgba(148, 163, 184, 0.2);
-        }
-        
-        .btn-secondary-refined:hover {
-            background: rgba(148, 163, 184, 0.1);
-            color: var(--text-primary);
-        }
-        
-        .alert-compact {
-            background: var(--bg-secondary);
-            border-left: 3px solid var(--warning-refined);
-            border-radius: 0 8px 8px 0;
-            padding: 0.75rem 1rem;
-            margin-bottom: 0.75rem;
-        }
-        
-        .alert-compact.critical {
-            border-left-color: var(--danger-refined);
-        }
-        
-        .alert-title {
-            font-size: 0.875rem;
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: 0.5rem;
-        }
-        
-        .alert-description {
-            font-size: 0.75rem;
-            color: var(--text-secondary);
-            line-height: 1.4;
-        }
-        [data-bs-theme="dark"] .alert-danger { background-color: var(--bs-danger-bg-subtle-dark, #dc3545); border-color: var(--bs-danger-border-subtle-dark, #dc3545); color: var(--bs-danger-text-emphasis-dark, white); }
-        /* MODIFIED for better dark mode appearance */
         [data-bs-theme="dark"] .alert-warning {
-            background-color: #4A3B00; /* Darker yellow/brown */
+            background-color: #4A3B00;
             border-color: #665100;
-            color: #ffffff; /* Light text */
+            color: #ffffff;
         }
-        /* MODIFIED for better dark mode appearance */
+        
         [data-bs-theme="dark"] .alert-info {
-            background-color: #00424A; /* Darker cyan/teal */
+            background-color: #00424A;
             border-color: #005F6B;
-            color: #ffffff; /* Light text */
+            color: #ffffff;
         }
-        [data-bs-theme="dark"] .alert-light { background-color: #f8f9fa; border-color: #f8f9fa; color: black; }
-        [data-bs-theme="dark"] .dropdown-menu { background-color: var(--bs-secondary-bg-dark); border-color: var(--bs-border-color-dark); }
-        [data-bs-theme="dark"] .dropdown-item { color: var(--bs-body-color-dark); }
-        [data-bs-theme="dark"] .dropdown-item:hover, [data-bs-theme="dark"] .dropdown-item:focus { color: var(--bs-emphasis-color-dark); background-color: var(--bs-tertiary-bg-dark); }
+        
+        [data-bs-theme="dark"] .alert-light { 
+            background-color: #f8f9fa; 
+            border-color: #f8f9fa; 
+            color: black; 
+        }
+        
+        [data-bs-theme="dark"] .dropdown-menu { 
+            background-color: var(--bs-secondary-bg-dark); 
+            border-color: var(--bs-border-color-dark); 
+        }
+        
+        [data-bs-theme="dark"] .dropdown-item { 
+            color: var(--bs-body-color-dark); 
+        }
+        
+        [data-bs-theme="dark"] .dropdown-item:hover, [data-bs-theme="dark"] .dropdown-item:focus { 
+            color: var(--bs-emphasis-color-dark); 
+            background-color: var(--bs-tertiary-bg-dark); 
+        }
 
-        /* ADDED for dark mode gradient card headers */
         [data-bs-theme="dark"] .card-header.bg-gradient-primary {
             background-image: none;
-            background-color: #0d6efd; /* Using the existing .bg-primary dark mode color */
+            background-color: #0d6efd;
             color: white;
-        }
-        [data-bs-theme="dark"] .card-header.bg-gradient-warning {
-            background-image: none;
-            background-color: #4A3B00; /* Consistent with alert-warning dark */
-            color: white;
-        }
-        [data-bs-theme="dark"] .card-header.bg-gradient-info {
-            background-image: none;
-            background-color: #00424A; /* Consistent with alert-info dark */
-            color: white;
-        }
-        [data-bs-theme="dark"] .card-header.bg-gradient-secondary {
-            background-image: none;
-            background-color: #495057; /* Darker gray */
-            color: white;
-        }
-        [data-bs-theme="dark"] .card-header.bg-gradient-success {
-            background-image: none;
-            background-color: #145A32; /* Darker green */
-            color: white;
-        }
-        [data-bs-theme="dark"] .card-header.bg-gradient-danger {
-            background-image: none;
-            background-color: #dc3545; /* Using the existing .alert-danger dark mode color */
-            color: white;
-        }
-
-        /* ADDED for dark mode gradient cards */
-        [data-bs-theme="dark"] .metric-card-gradient,
-        [data-bs-theme="dark"] .reorder-detail-card.gradient-card,
-        [data-bs-theme="dark"] .info-card-gradient {
-            color: white; /* Ensure text is white on dark gradients */
-        }
-
-        [data-bs-theme="dark"] .metric-card-purple,
-        [data-bs-theme="dark"] .gradient-purple {
-            background: linear-gradient(135deg, #3E2723 0%, #5D4037 100%) !important; /* Dark Brown Gradient */
-        }
-
-        [data-bs-theme="dark"] .metric-card-pink,
-        [data-bs-theme="dark"] .gradient-pink {
-            background: linear-gradient(135deg, #4A148C 0%, #7B1FA2 100%) !important; /* Dark Purple Gradient */
-        }
-
-        [data-bs-theme="dark"] .metric-card-blue,
-        [data-bs-theme="dark"] .gradient-blue {
-            background: linear-gradient(135deg, #0D47A1 0%, #1976D2 100%) !important; /* Dark Blue Gradient */
-        }
-
-        [data-bs-theme="dark"] .metric-card-yellow,
-        [data-bs-theme="dark"] .gradient-yellow {
-            background: linear-gradient(135deg, #E65100 0%, #F57C00 100%) !important; /* Dark Orange Gradient */
         }
         
-        /* Ensure text within these gradient cards is light */
-        [data-bs-theme="dark"] .metric-card-gradient .metric-label,
-        [data-bs-theme="dark"] .metric-card-gradient .metric-trend {
-            color: rgba(255, 255, 255, 0.7) !important; /* Lighter text for labels and trends */
+        [data-bs-theme="dark"] .card-header.bg-gradient-warning {
+            background-image: none;
+            background-color: #4A3B00;
+            color: white;
         }
-
-        [data-bs-theme="dark"] .reorder-detail-card.gradient-card .text-white-50,
-        [data-bs-theme="dark"] .info-card-gradient .text-white-50 {
-            color: rgba(255, 255, 255, 0.7) !important; /* Lighter text for sub-headings */
+        
+        [data-bs-theme="dark"] .card-header.bg-gradient-info {
+            background-image: none;
+            background-color: #00424A;
+            color: white;
         }
-
-        [data-bs-theme="dark"] .reorder-detail-card.gradient-card .badge.bg-white,
-        [data-bs-theme="dark"] .info-card-gradient .badge.bg-white{
-            background-color: var(--bs-dark-bg-subtle) !important; /* Darker badge background */
-            color: var(--bs-light-text-emphasis) !important; /* Light text for badge */
+        
+        [data-bs-theme="dark"] .card-header.bg-gradient-secondary {
+            background-image: none;
+            background-color: #495057;
+            color: white;
         }
-
+        
+        [data-bs-theme="dark"] .card-header.bg-gradient-success {
+            background-image: none;
+            background-color: #145A32;
+            color: white;
+        }
+        
+        [data-bs-theme="dark"] .card-header.bg-gradient-danger {
+            background-image: none;
+            background-color: #dc3545;
+            color: white;
+        }
     </style>
     {% block extra_css %}{% endblock %}
 </head>
