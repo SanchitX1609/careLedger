@@ -1,0 +1,285 @@
+/* careLedger Redesigned UI Components */
+
+/* Color Variables */
+:root {
+  /* Base Colors */
+  --bg-primary: #0f172a;
+  --bg-secondary: #1e293b;
+  --bg-tertiary: #334155;
+  
+  /* Text Colors */
+  --text-primary: #f8fafc;
+  --text-secondary: #cbd5e1;
+  --text-tertiary: #64748b;
+  
+  /* Action Colors */
+  --primary: #3b82f6;
+  --success: #10b981;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+  --info: #06b6d4;
+  
+  /* Spacing */
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-6: 1.5rem;
+}
+
+/* Compact Metric Card - NEW DESIGN */
+.metric-card-compact {
+  background: var(--bg-secondary);
+  border: 1px solid rgba(148, 163, 184, 0.1);
+  border-radius: 12px;
+  padding: var(--space-4);
+  transition: all 0.2s ease;
+  height: 100%;
+}
+
+.metric-card-compact:hover {
+  background: var(--bg-tertiary);
+  border-color: rgba(148, 163, 184, 0.2);
+  transform: translateY(-1px);
+}
+
+.metric-value {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1;
+  margin-bottom: var(--space-2);
+}
+
+.metric-label {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+  margin-bottom: var(--space-2);
+}
+
+.metric-trend {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.metric-trend.positive {
+  background: rgba(16, 185, 129, 0.1);
+  color: var(--success);
+}
+
+.metric-trend.negative {
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--danger);
+}
+
+.metric-trend.neutral {
+  background: rgba(148, 163, 184, 0.1);
+  color: var(--text-tertiary);
+}
+
+/* Status Indicator - Subtle but clear */
+.metric-status {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-left: auto;
+}
+
+.metric-status.success { background: var(--success); }
+.metric-status.warning { background: var(--warning); }
+.metric-status.danger { background: var(--danger); }
+
+/* Enhanced List Item Design */
+.list-item-enhanced {
+  background: var(--bg-secondary);
+  border: 1px solid rgba(148, 163, 184, 0.1);
+  border-radius: 8px;
+  padding: var(--space-4);
+  margin-bottom: var(--space-3);
+  transition: all 0.2s ease;
+}
+
+.list-item-enhanced:hover {
+  background: var(--bg-tertiary);
+  border-color: rgba(148, 163, 184, 0.2);
+}
+
+.list-item-header {
+  display: flex;
+  justify-content: between;
+  align-items: flex-start;
+  margin-bottom: var(--space-2);
+}
+
+.list-item-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.list-item-meta {
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+  display: flex;
+  gap: var(--space-3);
+  margin-top: var(--space-2);
+}
+
+/* Action Button Refinements */
+.btn-compact {
+  padding: 6px 12px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border-radius: 6px;
+  border: none;
+  transition: all 0.2s ease;
+}
+
+.btn-primary-refined {
+  background: var(--primary);
+  color: white;
+}
+
+.btn-primary-refined:hover {
+  background: #2563eb;
+  transform: translateY(-1px);
+}
+
+.btn-secondary-refined {
+  background: var(--bg-tertiary);
+  color: var(--text-secondary);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+}
+
+.btn-secondary-refined:hover {
+  background: rgba(148, 163, 184, 0.1);
+  color: var(--text-primary);
+}
+
+/* Section Headers */
+.section-header {
+  display: flex;
+  justify-content: between;
+  align-items: center;
+  margin-bottom: var(--space-6);
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+}
+
+.section-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.section-subtitle {
+  font-size: 0.875rem;
+  color: var(--text-tertiary);
+  margin-top: var(--space-2);
+}
+
+/* Alert Components */
+.alert-compact {
+  background: var(--bg-secondary);
+  border-left: 3px solid var(--warning);
+  border-radius: 0 8px 8px 0;
+  padding: var(--space-3) var(--space-4);
+  margin-bottom: var(--space-3);
+}
+
+.alert-compact.critical {
+  border-left-color: var(--danger);
+}
+
+.alert-compact.success {
+  border-left-color: var(--success);
+}
+
+.alert-title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: var(--space-2);
+}
+
+.alert-description {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+/* Progress Indicators - Subtle */
+.progress-refined {
+  height: 4px;
+  background: rgba(148, 163, 184, 0.1);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-top: var(--space-2);
+}
+
+.progress-bar-refined {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+
+.progress-bar-refined.success { background: var(--success); }
+.progress-bar-refined.warning { background: var(--warning); }
+.progress-bar-refined.danger { background: var(--danger); }
+
+/* Mobile Optimizations */
+@media (max-width: 768px) {
+  .metric-card-compact {
+    padding: var(--space-3);
+  }
+  
+  .metric-value {
+    font-size: 1.5rem;
+  }
+  
+  .list-item-enhanced {
+    padding: var(--space-3);
+  }
+  
+  .section-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-2);
+  }
+}
+
+/* Chart Container Improvements */
+.chart-container-refined {
+  background: var(--bg-secondary);
+  border: 1px solid rgba(148, 163, 184, 0.1);
+  border-radius: 12px;
+  padding: var(--space-6);
+  margin-bottom: var(--space-6);
+}
+
+.chart-header {
+  display: flex;
+  justify-content: between;
+  align-items: center;
+  margin-bottom: var(--space-4);
+}
+
+.chart-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.chart-controls {
+  display: flex;
+  gap: var(--space-2);
+}

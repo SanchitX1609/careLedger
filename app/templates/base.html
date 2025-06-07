@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark" id="html-root">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>{% block title %}careLedger - Inventory Management{% endblock %}</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            transition: background 0.3s, color 0.3s;
+        }
+        .navbar-brand {
+            font-weight: bold;
+            color: #2c5282 !important;
+            animation: fadeInDown 0.8s ease-out;
+        }
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translate3d(0, -100%, 0);
+            }
+            to {
+                opacity: 1;
+                transform: translate3d(0, 0, 0);
+            }
+        }
+        .sidebar {
+            background: linear-gradient(180deg, #232526 0%, #414345 100%);
+            min-height: 100vh;
+            transition: all 0.3s ease;
+        }
+        .sidebar .nav-link {
+            color: rgba(255,255,255,0.8);
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin: 4px 0;
+            transition: all 0.3s ease;
+        }
+        .sidebar .nav-link:hover,
+        .sidebar .nav-link.active {
+            color: #fff;
+            background-color: rgba(255,255,255,0.1);
+        }
+        .main-content {
+            background-color: var(--bs-body-bg);
+            min-height: 100vh;
+        }
+        .metric-card {
+            transition: transform 0.2s ease;
+        }
+        .metric-card:hover {
+            transform: translateY(-2px);
+        }
+        /* Dark mode overrides */
+        [data-bs-theme="dark"] body {
+            background: #181a1b;
+            color: #e0e0e0;
+        }
+        [data-bs-theme="dark"] .sidebar {
+            background: linear-gradient(180deg, #181a1b 0%, #232526 100%);
+        }
+        [data-bs-theme="dark"] .main-content {
+            background: #232526;
+        }
+        [data-bs-theme="dark"] .card {
+            background: #232526;
+            color: #e0e0e0;
+        }
+        [data-bs-theme="dark"] .table {
+            color: #e0e0e0;
+        }
+        [data-bs-theme="dark"] .table-striped > tbody > tr:nth-of-type(odd) {
+            background-color: #232526;
+        }
+        [data-bs-theme="dark"] .table-dark {
+            background-color: #181a1b;
+        }
+        [data-bs-theme="dark"] .form-control, [data-bs-theme="dark"] .form-select {
+            background: #232526;
+            color: #e0e0e0;
+            border-color: #444;
+        }
+        [data-bs-theme="dark"] .modal-content {
+            background: #232526;
+            color: #e0e0e0;
+        }
+        .dark-toggle {
+            cursor: pointer;
+            color: #ffc107;
+            font-size: 1.5rem;
+            margin-left: 1rem;
+        }
+        /* Enhanced animations and styling */
+        .animate-card {
+            animation: slideInUp 0.6s ease-out;
+            transition: all 0.3s ease;
+        }
+        
+        .animate-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2) !important;
+        }
+        
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translate3d(0, 100%, 0);
+            }
+            to {
+                opacity: 1;
+                transform: translate3d(0, 0, 0);
+            }
+        }
+        
+        .bg-gradient-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+        }
+        
+        .bg-gradient-success {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%) !important;
+        }
+        
+        .bg-gradient-danger {
+            background: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%) !important;
+        }
+        
+        .bg-gradient-info {
+            background: linear-gradient(135deg, #0093E9 0%, #80D0C7 100%) !important;
+        }
+        
+        .bg-gradient-warning {
+            background: linear-gradient(135deg, #FBDA61 0%, #FF5ACD 100%) !important;
+        }
+        
+        .metric-icon {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 0.7; }
+            50% { opacity: 1; }
+        }
+        
+        .card-hover {
+            transition: all 0.3s ease;
+            border: none !important;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        
+        .stock-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 8px;
+        }
+        
+        .stock-critical {
+            background-color: #dc3545;
+            animation: blink 1s infinite;
+        }
+        
+        .stock-low {
+            background-color: #ffc107;
+        }
+        
+        .stock-good {
+            background-color: #28a745;
+        }
+        
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0.3; }
+        }
+        
+        .progress-enhanced {
+            height: 6px;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.2);
+        }
+        
+        .progress-enhanced .progress-bar {
+            border-radius: 10px;
+            animation: progressFill 1.5s ease-in-out;
+        }
+        
+        @keyframes progressFill {
+            from { width: 0%; }
+        }
+        
+        .list-group-item {
+            border-left: 4px solid transparent;
+            transition: all 0.3s ease;
+        }
+        
+        .list-group-item.critical-stock {
+            border-left-color: #dc3545;
+            background: rgba(220, 53, 69, 0.05);
+        }
+        
+        .list-group-item.low-stock {
+            border-left-color: #ffc107;
+            background: rgba(255, 193, 7, 0.05);
+        }
+        
+        .list-group-item:hover {
+            background: rgba(0,0,0,0.05);
+            transform: translateX(5px);
+        }
+        
+        .alert-enhanced {
+            border-left: 4px solid;
+            border-radius: 8px;
+            animation: slideInRight 0.5s ease-out;
+        }
+        
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(100%);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        .btn-floating {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .table-hover tbody tr:hover {
+            background-color: rgba(0,0,0,0.075);
+            transform: scale(1.01);
+            transition: all 0.2s ease;
+        }
+        
+        .modal-content {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        }
+        
+        .loading-spinner {
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Mobile Responsiveness Improvements */
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                top: 0;
+                left: -100%;
+                width: 80%;
+                height: 100vh;
+                z-index: 1050;
+                transition: left 0.3s ease;
+            }
+            
+            .sidebar.show {
+                left: 0;
+            }
+            
+            .main-content {
+                margin-left: 0;
+                padding: 15px;
+            }
+            
+            .card-body {
+                padding: 1rem;
+            }
+            
+            .btn-group-sm .btn {
+                padding: 0.25rem 0.5rem;
+                font-size: 0.875rem;
+            }
+            
+            .table-responsive {
+                font-size: 0.9rem;
+            }
+            
+            .progress {
+                height: 15px !important;
+            }
+            
+            .progress-bar {
+                font-size: 0.75rem;
+            }
+            
+            .modal-dialog {
+                margin: 0.5rem;
+            }
+            
+            .h1, .h2, .h3, .h4, .h5, .h6,
+            h1, h2, h3, h4, h5, h6 {
+                font-size: calc(1rem + 0.5vw);
+            }
+            
+            .fs-1 { font-size: 2rem !important; }
+            .fs-4 { font-size: 1.25rem !important; }
+            
+            .p-3 { padding: 0.75rem !important; }
+            .mb-4 { margin-bottom: 1rem !important; }
+            .mt-4 { margin-top: 1rem !important; }
+        }
+        
+        @media (max-width: 576px) {
+            .container-fluid {
+                padding: 0;
+            }
+            
+            .main-content {
+                padding: 10px;
+            }
+            
+            .card {
+                margin-bottom: 0.75rem;
+                border-radius: 8px;
+            }
+            
+            .card-body {
+                padding: 0.75rem;
+            }
+            
+            .card-title {
+                font-size: 1rem;
+                margin-bottom: 0.5rem;
+            }
+            
+            .card-text {
+                font-size: 0.85rem;
+                line-height: 1.4;
+            }
+            
+            /* Optimize metric cards for mobile */
+            .metric-card .card-body h2,
+            .metric-card .card-body .card-title {
+                font-size: 1.5rem;
+            }
+            
+            .metric-card .card-body p,
+            .metric-card .card-body .card-text {
+                font-size: 0.8rem;
+            }
+            
+            /* Hide large icons on very small screens */
+            .fs-1, .display-4 {
+                display: none !important;
+            }
+            
+            /* Compact buttons */
+            .btn {
+                padding: 0.375rem 0.5rem;
+                font-size: 0.8rem;
+            }
+            
+            .btn-lg {
+                padding: 0.5rem 0.75rem;
+                font-size: 0.9rem;
+            }
+            
+            /* Better spacing for mobile touch */
+            .row.g-3 > * {
+                padding-left: 0.375rem;
+                padding-right: 0.375rem;
+            }
+            
+            /* Improve dropdown menus */
+            .dropdown-menu {
+                font-size: 0.9rem;
+            }
+            
+            .dropdown-item {
+                padding: 0.5rem 1rem;
+            }
+        }
+        
+        /* Ultra-small screens (iPhone SE, etc.) */
+        @media (max-width: 375px) {
+            .page-header-mobile h1 {
+                font-size: 1.1rem !important;
+            }
+            
+            .page-header-mobile .btn-toolbar .dropdown-toggle {
+                padding: 0.25rem 0.4rem;
+                font-size: 0.8rem;
+            }
+            
+            .card-body {
+                padding: 0.5rem;
+            }
+            
+            .metric-card .card-body h2 {
+                font-size: 1.25rem;
+            }
+        }
+        
+        /* REDESIGNED UI SYSTEM - Professional Components */
+        :root {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-tertiary: #334155;
+            --text-primary: #f8fafc;
+            --text-secondary: #cbd5e1;
+            --text-tertiary: #64748b;
+            --primary-refined: #3b82f6;
+            --success-refined: #10b981;
+            --warning-refined: #f59e0b;
+            --danger-refined: #ef4444;
+        }
+        
+        .metric-card-compact {
+            background: var(--bg-secondary);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            border-radius: 12px;
+            padding: 1rem;
+            transition: all 0.2s ease;
+            height: 100%;
+        }
+        
+        .metric-card-compact:hover {
+            background: var(--bg-tertiary);
+            border-color: rgba(148, 163, 184, 0.2);
+            transform: translateY(-1px);
+        }
+        
+        .metric-value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            line-height: 1;
+            margin-bottom: 0.5rem;
+        }
+        
+        .metric-label {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+        
+        .metric-trend {
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 2px 6px;
+            border-radius: 4px;
+            display: inline-flex;
+            align-items: center;
+            gap: 2px;
+        }
+        
+        .metric-trend.positive {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success-refined);
+        }
+        
+        .metric-trend.negative {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger-refined);
+        }
+        
+        .metric-trend.neutral {
+            background: rgba(148, 163, 184, 0.1);
+            color: var(--text-tertiary);
+        }
+        
+        .metric-status {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+        
+        .metric-status.success { background: var(--success-refined); }
+        .metric-status.warning { background: var(--warning-refined); }
+        .metric-status.danger { background: var(--danger-refined); }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+        }
+        
+        .btn-compact {
+            padding: 6px 12px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            border-radius: 6px;
+            border: none;
+            transition: all 0.2s ease;
+        }
+        
+        .btn-primary-refined {
+            background: var(--primary-refined);
+            color: white;
+        }
+        
+        .btn-primary-refined:hover {
+            background: #2563eb;
+            color: white;
+            transform: translateY(-1px);
+        }
+        
+        .btn-secondary-refined {
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+        }
+        
+        .btn-secondary-refined:hover {
+            background: rgba(148, 163, 184, 0.1);
+            color: var(--text-primary);
+        }
+        
+        .alert-compact {
+            background: var(--bg-secondary);
+            border-left: 3px solid var(--warning-refined);
+            border-radius: 0 8px 8px 0;
+            padding: 0.75rem 1rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        .alert-compact.critical {
+            border-left-color: var(--danger-refined);
+        }
+        
+        .alert-title {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .alert-description {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <div class="container-fluid">
+        <!-- Mobile navigation toggle -->
+        <button class="btn mobile-menu-toggle d-md-none" 
+                onclick="toggleSidebar()">
+            <i class="bi bi-list"></i>
+        </button>
+        
+        <!-- Mobile backdrop -->
+        <div class="d-md-none position-fixed w-100 h-100" 
+             style="background: rgba(0,0,0,0.5); z-index: 1049; display: none;" 
+             id="sidebarBackdrop" 
+             onclick="closeSidebar()"></div>
+        
+        <div class="row">
+            <!-- Sidebar -->
+            <nav class="col-md-3 col-lg-2 sidebar">
+                <div class="position-sticky pt-3">
+                    <h5 class="text-white mb-4">
+                        <i class="bi bi-heart-fill me-2"></i>careLedger
+                    </h5>
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.endpoint == 'main.index' %}active{% endif %}" 
+                               href="{{ url_for('main.index') }}">
+                                <i class="bi bi-speedometer2 me-2"></i>Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.endpoint == 'main.inventory' %}active{% endif %}" 
+                               href="{{ url_for('main.inventory') }}">
+                                <i class="bi bi-box-seam me-2"></i>Inventory
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.endpoint == 'main.usage' %}active{% endif %}" 
+                               href="{{ url_for('main.usage') }}">
+                                <i class="bi bi-clipboard-data me-2"></i>Usage Logs
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.endpoint == 'main.forecasting' %}active{% endif %}" 
+                               href="{{ url_for('main.forecasting') }}">
+                                <i class="bi bi-graph-up-arrow me-2"></i>AI Forecasting
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.endpoint == 'main.alerts' %}active{% endif %}" 
+                               href="{{ url_for('main.alerts') }}">
+                                <i class="bi bi-bell me-2"></i>Alerts
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.endpoint == 'main.reports' %}active{% endif %}" 
+                               href="{{ url_for('main.reports') }}">
+                                <i class="bi bi-file-earmark-bar-graph me-2"></i>Reports
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.endpoint == 'main.items' %}active{% endif %}" 
+                               href="{{ url_for('main.items') }}">
+                                <i class="bi bi-tags me-2"></i>Items
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.endpoint == 'main.orphanages' %}active{% endif %}" 
+                               href="{{ url_for('main.orphanages') }}">
+                                <i class="bi bi-building me-2"></i>Facilities
+                            </a>
+                        </li>
+                        
+                        <!-- User Authentication Section -->
+                        {% if current_user.is_authenticated %}
+                            <li class="nav-item mt-4">
+                                <hr class="text-white-50">
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link {% if request.endpoint == 'auth.profile' %}active{% endif %}" 
+                                   href="{{ url_for('auth.profile') }}">
+                                    <i class="bi bi-person-circle me-2"></i>Profile
+                                </a>
+                            </li>
+                            {% if current_user.role.name == 'admin' %}
+                            <li class="nav-item">
+                                <a class="nav-link {% if request.endpoint == 'auth.users' %}active{% endif %}" 
+                                   href="{{ url_for('auth.users') }}">
+                                    <i class="bi bi-people me-2"></i>User Management
+                                </a>
+                            </li>
+                            {% endif %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('auth.logout') }}">
+                                    <i class="bi bi-box-arrow-right me-2"></i>Logout
+                                </a>
+                            </li>
+                        {% else %}
+                            <li class="nav-item mt-4">
+                                <hr class="text-white-50">
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link {% if request.endpoint == 'auth.login' %}active{% endif %}" 
+                                   href="{{ url_for('auth.login') }}">
+                                    <i class="bi bi-box-arrow-in-right me-2"></i>Login
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link {% if request.endpoint == 'auth.register' %}active{% endif %}" 
+                                   href="{{ url_for('auth.register') }}">
+                                    <i class="bi bi-person-plus me-2"></i>Register
+                                </a>
+                            </li>
+                        {% endif %}
+                        
+                        <li class="nav-item mt-4">
+                            <span class="dark-toggle" id="darkModeToggle" title="Toggle dark mode">
+                                <i class="bi bi-moon-stars-fill"></i>
+                            </span>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+            <!-- Main content -->
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 main-content">
+                <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-start align-items-md-center pt-3 pb-2 mb-3 border-bottom page-header-mobile page-header-mobile">
+                    <h1 class="h2 mb-2 mb-md-0">{% block page_title %}Dashboard{% endblock %}</h1>
+                    <div class="btn-toolbar mb-2 mb-md-0 w-100 w-md-auto d-flex justify-content-between">
+                        <div class="me-3">
+                            {% if current_user.is_authenticated %}
+                                <div class="dropdown">
+                                    <a class="btn btn-outline-secondary dropdown-toggle" href="#" role="button" 
+                                       data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="bi bi-person-circle me-2"></i>{{ current_user.username }}
+                                        <small class="text-muted">({{ current_user.role.name }})</small>
+                                    </a>
+                                    <ul class="dropdown-menu dropdown-menu-end">
+                                        <li><a class="dropdown-item" href="{{ url_for('auth.profile') }}">
+                                            <i class="bi bi-person me-2"></i>Profile
+                                        </a></li>
+                                        {% if current_user.role.name == 'admin' %}
+                                        <li><a class="dropdown-item" href="{{ url_for('auth.users') }}">
+                                            <i class="bi bi-people me-2"></i>User Management
+                                        </a></li>
+                                        {% endif %}
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}">
+                                            <i class="bi bi-box-arrow-right me-2"></i>Logout
+                                        </a></li>
+                                    </ul>
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div>
+                            {% block page_actions %}{% endblock %}
+                        </div>
+                    </div>
+                </div>
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show" role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+                {% block content %}{% endblock %}
+            </main>
+        </div>
+    </div>
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Dark mode toggle
+        const htmlRoot = document.getElementById('html-root');
+        const darkToggle = document.getElementById('darkModeToggle');
+        function setTheme(theme) {
+            htmlRoot.setAttribute('data-bs-theme', theme);
+            localStorage.setItem('careledger-theme', theme);
+            darkToggle.innerHTML = theme === 'dark' ? '<i class="bi bi-brightness-high-fill"></i>' : '<i class="bi bi-moon-stars-fill"></i>';
+        }
+        darkToggle.onclick = function() {
+            const current = htmlRoot.getAttribute('data-bs-theme');
+            setTheme(current === 'dark' ? 'light' : 'dark');
+        };
+        // On load, set theme from localStorage
+        (function() {
+            const saved = localStorage.getItem('careledger-theme');
+            if (saved) setTheme(saved);
+        })();
+        // Utility functions
+        function showAlert(message, type = 'success') {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
+            alertDiv.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            
+            const container = document.querySelector('.main-content');
+            const firstChild = container.querySelector('.d-flex');
+            container.insertBefore(alertDiv, firstChild.nextSibling);
+            
+            // Auto-dismiss after 5 seconds
+            setTimeout(() => {
+                if (alertDiv.parentNode) {
+                    alertDiv.remove();
+                }
+            }, 5000);
+        }
+        
+        function formatNumber(num) {
+            return new Intl.NumberFormat().format(num);
+        }
+        
+        function formatDate(dateString) {
+            return new Date(dateString).toLocaleDateString();
+        }
+        
+        // AJAX helper
+        function makeRequest(url, method = 'GET', data = null) {
+            const options = {
+                method: method,
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            };
+            
+            if (data) {
+                options.body = JSON.stringify(data);
+            }
+            
+            return fetch(url, options)
+                .then(response => response.json())
+                .catch(error => {
+                    console.error('Request failed:', error);
+                    showAlert('Request failed. Please try again.', 'danger');
+                });
+        }
+        
+        // Mobile navigation functions
+        function toggleSidebar() {
+            const sidebar = document.querySelector('.sidebar');
+            const backdrop = document.getElementById('sidebarBackdrop');
+            
+            if (sidebar.classList.contains('show')) {
+                closeSidebar();
+            } else {
+                sidebar.classList.add('show');
+                backdrop.style.display = 'block';
+                document.body.style.overflow = 'hidden';
+            }
+        }
+        
+        function closeSidebar() {
+            const sidebar = document.querySelector('.sidebar');
+            const backdrop = document.getElementById('sidebarBackdrop');
+            
+            sidebar.classList.remove('show');
+            backdrop.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+        
+        // Close sidebar when clicking on navigation links on mobile
+        document.addEventListener('DOMContentLoaded', function() {
+            if (window.innerWidth <= 768) {
+                const navLinks = document.querySelectorAll('.sidebar .nav-link');
+                navLinks.forEach(link => {
+                    link.addEventListener('click', closeSidebar);
+                });
+            }
+        });
+        
+        // Handle window resize
+        window.addEventListener('resize', function() {
+            if (window.innerWidth > 768) {
+                closeSidebar();
+            }
+        });
+    </script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

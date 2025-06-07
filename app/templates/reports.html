@@ -1,0 +1,190 @@
+{% extends "base.html" %}
+
+{% block page_title %}Reports & Analytics{% endblock %}
+
+{% block page_actions %}
+    <div class="btn-group" role="group">
+        <button class="btn btn-primary" onclick="generateReport()">
+            <i class="bi bi-file-earmark-text me-1"></i>Generate Report
+        </button>
+        <button class="btn btn-success" onclick="exportData()">
+            <i class="bi bi-download me-1"></i>Export Data
+        </button>
+    </div>
+{% endblock %}
+
+{% block content %}
+    <!-- Summary Cards -->
+    <div class="row mb-4">
+        <div class="col-6 col-md-3">
+            <div class="card bg-primary text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h4 class="card-title">{{ total_items or 0 }}</h4>
+                            <p class="card-text">Total Items</p>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="bi bi-box-seam fs-1"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="card bg-success text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h4 class="card-title">{{ low_stock_count or 0 }}</h4>
+                            <p class="card-text">Low Stock Items</p>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="bi bi-exclamation-triangle fs-1"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="card bg-warning text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h4 class="card-title">{{ total_usage_logs or 0 }}</h4>
+                            <p class="card-text">Usage Logs</p>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="bi bi-clipboard-data fs-1"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="card bg-info text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h4 class="card-title">{{ total_orphanages or 0 }}</h4>
+                            <p class="card-text">Orphanages</p>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="bi bi-house fs-1"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Section -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="bi bi-bar-chart me-2"></i>Category Distribution
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="categoryChart" width="400" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="bi bi-graph-up me-2"></i>Usage Trends
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="usageChart" width="400" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Reports -->
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0">
+                <i class="bi bi-file-earmark-text me-2"></i>Recent Reports
+            </h5>
+        </div>
+        <div class="card-body">
+            <div class="text-center py-5">
+                <i class="bi bi-file-earmark-text fs-1 text-muted"></i>
+                <h4>No Reports Generated</h4>
+                <p class="text-muted">Generate your first report to see analytics and insights.</p>
+                <button class="btn btn-primary" onclick="generateReport()">
+                    Generate First Report
+                </button>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function generateReport() {
+        showAlert('Report generation feature coming soon!', 'info');
+    }
+    
+    function exportData() {
+        showAlert('Data export feature coming soon!', 'info');
+    }
+    
+    // Initialize charts if data is available
+    document.addEventListener('DOMContentLoaded', function() {
+        // Category Chart
+        const categoryCtx = document.getElementById('categoryChart').getContext('2d');
+        new Chart(categoryCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Food', 'Medicine', 'Clothing', 'Educational', 'Hygiene'],
+                datasets: [{
+                    data: [30, 20, 15, 20, 15],
+                    backgroundColor: [
+                        '#FF6384',
+                        '#36A2EB',
+                        '#FFCE56',
+                        '#4BC0C0',
+                        '#9966FF'
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+        
+        // Usage Chart
+        const usageCtx = document.getElementById('usageChart').getContext('2d');
+        new Chart(usageCtx, {
+            type: 'line',
+            data: {
+                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                datasets: [{
+                    label: 'Daily Usage',
+                    data: [12, 19, 8, 15, 25, 16, 22],
+                    borderColor: '#36A2EB',
+                    backgroundColor: 'rgba(54, 162, 235, 0.1)',
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    });
+</script>
+{% endblock %}

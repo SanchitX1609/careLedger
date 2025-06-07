@@ -1,0 +1,276 @@
+{% extends "base.html" %}
+
+{% block title %}Profile - careLedger{% endblock %}
+
+{% block page_title %}My Profile{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-8 col-md-12">
+            <!-- Profile Information Card -->
+            <div class="card mb-4 animate-card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0"><i class="bi bi-person-circle me-2"></i>Profile Information</h5>
+                    <button class="btn btn-outline-primary btn-sm" onclick="toggleEdit()">
+                        <i class="bi bi-pencil-square me-1"></i>Edit
+                    </button>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="{{ url_for('auth.profile') }}" id="profileForm">
+                        {{ form.hidden_tag() }}
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Username</label>
+                                <input type="text" class="form-control" value="{{ current_user.username }}" readonly>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                {{ form.email.label(class="form-label") }}
+                                {{ form.email(class="form-control", readonly=true, id="email") }}
+                                {% if form.email.errors %}
+                                    <div class="text-danger small">
+                                        {% for error in form.email.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                {{ form.first_name.label(class="form-label") }}
+                                {{ form.first_name(class="form-control", readonly=true, id="first_name") }}
+                                {% if form.first_name.errors %}
+                                    <div class="text-danger small">
+                                        {% for error in form.first_name.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                {{ form.last_name.label(class="form-label") }}
+                                {{ form.last_name(class="form-control", readonly=true, id="last_name") }}
+                                {% if form.last_name.errors %}
+                                    <div class="text-danger small">
+                                        {% for error in form.last_name.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Role</label>
+                            <input type="text" class="form-control" value="{{ current_user.role.name }}" readonly>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Facility</label>
+                            <input type="text" class="form-control" value="{{ current_user.orphanage.name if current_user.orphanage else 'Not assigned' }}" readonly>
+                        </div>
+                        
+                        <div class="d-none" id="editButtons">
+                            <button type="submit" name="profile_submit" class="btn btn-primary me-2">
+                                <i class="bi bi-check-lg me-1"></i>Save Changes
+                            </button>
+                            <button type="button" class="btn btn-secondary" onclick="cancelEdit()">
+                                <i class="bi bi-x-lg me-1"></i>Cancel
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Change Password Card -->
+            <div class="card animate-card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-shield-lock me-2"></i>Change Password</h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="{{ url_for('auth.profile') }}">
+                        {{ password_form.hidden_tag() }}
+                        
+                        <div class="mb-3">
+                            {{ password_form.current_password.label(class="form-label") }}
+                            <div class="input-group">
+                                {{ password_form.current_password(class="form-control", id="currentPasswordField") }}
+                                <button class="btn btn-outline-secondary" type="button" onclick="togglePasswordField('currentPasswordField', 'currentPasswordIcon')">
+                                    <i class="bi bi-eye" id="currentPasswordIcon"></i>
+                                </button>
+                            </div>
+                            {% if password_form.current_password.errors %}
+                                <div class="text-danger small">
+                                    {% for error in password_form.current_password.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                {{ password_form.new_password.label(class="form-label") }}
+                                <div class="input-group">
+                                    {{ password_form.new_password(class="form-control", id="newPasswordField") }}
+                                    <button class="btn btn-outline-secondary" type="button" onclick="togglePasswordField('newPasswordField', 'newPasswordIcon')">
+                                        <i class="bi bi-eye" id="newPasswordIcon"></i>
+                                    </button>
+                                </div>
+                                {% if password_form.new_password.errors %}
+                                    <div class="text-danger small">
+                                        {% for error in password_form.new_password.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                {{ password_form.new_password2.label(class="form-label") }}
+                                <div class="input-group">
+                                    {{ password_form.new_password2(class="form-control", id="confirmPasswordField") }}
+                                    <button class="btn btn-outline-secondary" type="button" onclick="togglePasswordField('confirmPasswordField', 'confirmPasswordIcon')">
+                                        <i class="bi bi-eye" id="confirmPasswordIcon"></i>
+                                    </button>
+                                </div>
+                                {% if password_form.new_password2.errors %}
+                                    <div class="text-danger small">
+                                        {% for error in password_form.new_password2.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <button type="submit" name="password_submit" class="btn btn-warning">
+                            <i class="bi bi-shield-check me-1"></i>Change Password
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4 col-md-12">
+            <!-- Account Info Card -->
+            <div class="card mb-4 animate-card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-info-circle me-2"></i>Account Information</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <strong>Member Since:</strong><br>
+                        <span class="text-muted">{{ current_user.created_at.strftime('%B %d, %Y') if current_user.created_at else 'Unknown' }}</span>
+                    </div>
+                    <div class="mb-3">
+                        <strong>Last Login:</strong><br>
+                        <span class="text-muted">{{ current_user.last_login.strftime('%B %d, %Y at %I:%M %p') if current_user.last_login else 'Never' }}</span>
+                    </div>
+                    <div class="mb-3">
+                        <strong>Status:</strong><br>
+                        <span class="badge bg-{{ 'success' if current_user.is_active else 'danger' }}">
+                            {{ 'Active' if current_user.is_active else 'Inactive' }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Quick Stats Card -->
+            <div class="card animate-card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-graph-up me-2"></i>Your Activity</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <strong>Login Count:</strong><br>
+                        <span class="text-muted">{{ current_user.login_count if current_user.login_count else 0 }} times</span>
+                    </div>
+                    <div class="mb-3">
+                        <strong>Role Permissions:</strong><br>
+                        <span class="badge bg-info">{{ current_user.role.name.title() }}</span>
+                    </div>
+                    {% if current_user.orphanage %}
+                    <div class="mb-3">
+                        <strong>Managing:</strong><br>
+                        <span class="text-muted">{{ current_user.orphanage.name }}</span>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .animate-card {
+        animation: slideInUp 0.6s ease-out;
+    }
+    
+    @keyframes slideInUp {
+        from {
+            opacity: 0;
+            transform: translate3d(0, 30px, 0);
+        }
+        to {
+            opacity: 1;
+            transform: translate3d(0, 0, 0);
+        }
+    }
+    
+    .form-control:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+    }
+    
+    .btn-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+    }
+    
+    .btn-primary:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+    }
+</style>
+
+<script>
+    function toggleEdit() {
+        const fields = ['username', 'email', 'first_name', 'last_name'];
+        const editButtons = document.getElementById('editButtons');
+        const isReadonly = document.getElementById('username').readOnly;
+        
+        fields.forEach(field => {
+            document.getElementById(field).readOnly = !isReadonly;
+        });
+        
+        if (isReadonly) {
+            editButtons.classList.remove('d-none');
+        } else {
+            editButtons.classList.add('d-none');
+        }
+    }
+    
+    function cancelEdit() {
+        location.reload();
+    }
+    
+    function togglePasswordField(fieldId, iconId) {
+        const passwordField = document.getElementById(fieldId);
+        const toggleIcon = document.getElementById(iconId);
+        
+        if (passwordField.type === 'password') {
+            passwordField.type = 'text';
+            toggleIcon.className = 'bi bi-eye-slash';
+        } else {
+            passwordField.type = 'password';
+            toggleIcon.className = 'bi bi-eye';
+        }
+    }
+</script>
+{% endblock %}

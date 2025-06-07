@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block title %}Access Denied - careLedger{% endblock %}
+
+{% block page_title %}Access Denied{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6 col-md-8">
+            <div class="card border-0 shadow-lg animate-card">
+                <div class="card-body text-center p-5">
+                    <div class="error-icon mb-4">
+                        <i class="bi bi-shield-x text-warning" style="font-size: 4rem;"></i>
+                    </div>
+                    <h1 class="display-1 fw-bold text-warning mb-3">403</h1>
+                    <h2 class="h4 mb-3">Access Denied</h2>
+                    <p class="text-muted mb-4">
+                        You don't have permission to access this resource. 
+                        {% if current_user.is_authenticated %}
+                            Your current role ({{ current_user.role.name }}) doesn't have sufficient privileges.
+                        {% else %}
+                            Please log in to continue.
+                        {% endif %}
+                    </p>
+                    
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+                        {% if current_user.is_authenticated %}
+                            <a href="{{ url_for('main.index') }}" class="btn btn-primary btn-lg">
+                                <i class="bi bi-house-fill me-2"></i>Go Home
+                            </a>
+                            <button onclick="window.history.back()" class="btn btn-outline-secondary btn-lg">
+                                <i class="bi bi-arrow-left me-2"></i>Go Back
+                            </button>
+                        {% else %}
+                            <a href="{{ url_for('auth.login') }}" class="btn btn-primary btn-lg">
+                                <i class="bi bi-box-arrow-in-right me-2"></i>Login
+                            </a>
+                            <a href="{{ url_for('main.index') }}" class="btn btn-outline-secondary btn-lg">
+                                <i class="bi bi-house-fill me-2"></i>Go Home
+                            </a>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mt-4">
+                        <small class="text-muted">
+                            {% if current_user.is_authenticated %}
+                                Logged in as: {{ current_user.username }} ({{ current_user.role.name }})
+                            {% else %}
+                                Not logged in
+                            {% endif %}
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .animate-card {
+        animation: slideInUp 0.6s ease-out;
+    }
+    
+    @keyframes slideInUp {
+        from {
+            opacity: 0;
+            transform: translate3d(0, 100%, 0);
+        }
+        to {
+            opacity: 1;
+            transform: translate3d(0, 0, 0);
+        }
+    }
+    
+    .error-icon {
+        animation: bounce 2s ease-in-out infinite;
+    }
+    
+    @keyframes bounce {
+        0%, 20%, 50%, 80%, 100% {
+            transform: translateY(0);
+        }
+        40% {
+            transform: translateY(-10px);
+        }
+        60% {
+            transform: translateY(-5px);
+        }
+    }
+</style>
+{% endblock %}

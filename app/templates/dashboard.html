@@ -1,0 +1,504 @@
+{% extends "base.html" %}
+
+{% block page_title %}Dashboard{% endblock %}
+
+{% block page_actions %}
+    <!-- Desktop Actions -->
+    <div class="btn-group d-none d-md-inline-flex" role="group">
+        <button class="btn btn-primary" onclick="refreshDashboard()">
+            <i class="bi bi-arrow-clockwise me-1"></i>Refresh
+        </button>
+        <button class="btn btn-outline-secondary" onclick="exportDashboard()">
+            <i class="bi bi-download me-1"></i>Export
+        </button>
+        <button class="btn btn-outline-info" onclick="configureDashboard()">
+            <i class="bi bi-gear me-1"></i>Settings
+        </button>
+    </div>
+    
+    <!-- Mobile Actions Dropdown -->
+    <div class="dropdown d-md-none">
+        <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+            <i class="bi bi-three-dots-vertical"></i>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end">
+            <li><a class="dropdown-item" href="#" onclick="refreshDashboard()">
+                <i class="bi bi-arrow-clockwise me-2"></i>Refresh
+            </a></li>
+            <li><a class="dropdown-item" href="#" onclick="exportDashboard()">
+                <i class="bi bi-download me-2"></i>Export
+            </a></li>
+            <li><a class="dropdown-item" href="#" onclick="configureDashboard()">
+                <i class="bi bi-gear me-2"></i>Settings
+            </a></li>
+        </ul>
+    </div>
+{% endblock %}
+
+{% block content %}
+{% if data %}
+    <div class="row mb-4 g-3">
+        <!-- Summary Cards -->
+        <div class="col-6 col-md-3 mb-3">
+            <div class="card metric-card bg-gradient-primary text-white shadow-lg border-0 animate-card h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h2 class="card-title fw-bold mb-1">{{ data.summary.total_items }}</h2>
+                            <p class="card-text opacity-75 mb-0">
+                                <i class="bi bi-box-seam me-1"></i>Total Items
+                            </p>
+                        </div>
+                        <div class="metric-icon d-none d-sm-block">
+                            <i class="bi bi-boxes display-4 opacity-75"></i>
+                        </div>
+                    </div>
+                    <div class="progress progress-enhanced mt-3">
+                        <div class="progress-bar bg-white" style="width: 85%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-6 col-md-3 mb-3">
+            <div class="card metric-card bg-gradient-warning text-white shadow-lg border-0 animate-card h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h2 class="card-title fw-bold mb-1">{{ data.summary.low_stock_count }}</h2>
+                            <p class="card-text opacity-75 mb-0">
+                                <i class="bi bi-exclamation-triangle me-1"></i>Low Stock Items
+                            </p>
+                        </div>
+                        <div class="metric-icon d-none d-sm-block">
+                            <i class="bi bi-graph-down-arrow display-4 opacity-75"></i>
+                        </div>
+                    </div>
+                    <div class="progress progress-enhanced mt-3">
+                        <div class="progress-bar bg-white" style="width: 65%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-6 col-md-3 mb-3">
+            <div class="card metric-card bg-gradient-danger text-white shadow-lg border-0 animate-card h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h2 class="card-title fw-bold mb-1">{{ data.summary.critical_stock_count }}</h2>
+                            <p class="card-text opacity-75 mb-0">
+                                <i class="bi bi-exclamation-triangle me-1"></i>Critical Stock
+                            </p>
+                        </div>
+                        <div class="metric-icon d-none d-sm-block">
+                            <i class="bi bi-exclamation-circle display-4 opacity-75"></i>
+                        </div>
+                    </div>
+                    <div class="progress progress-enhanced mt-3">
+                        <div class="progress-bar bg-white" style="width: 25%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-6 col-md-3 mb-3">
+            <div class="card metric-card bg-gradient-info text-white shadow-lg border-0 animate-card h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h2 class="card-title fw-bold mb-1">{{ data.summary.active_alerts_count }}</h2>
+                            <p class="card-text opacity-75 mb-0">
+                                <i class="bi bi-bell me-1"></i>Active Alerts
+                            </p>
+                        </div>
+                        <div class="metric-icon d-none d-sm-block">
+                            <i class="bi bi-bell-fill display-4 opacity-75"></i>
+                        </div>
+                    </div>
+                    <div class="progress progress-enhanced mt-3">
+                        <div class="progress-bar bg-white" style="width: 45%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Mobile Touch Buttons -->
+    <div class="d-md-none mb-4">
+        <div class="row g-2">
+            <div class="col-4">
+                <button class="btn btn-primary btn-lg w-100 h-100 d-flex flex-column align-items-center justify-content-center" 
+                        onclick="refreshDashboard()" style="min-height: 80px;">
+                    <i class="bi bi-arrow-clockwise fs-4 mb-1"></i>
+                    <small class="text-center">Refresh</small>
+                </button>
+            </div>
+            <div class="col-4">
+                <button class="btn btn-outline-secondary btn-lg w-100 h-100 d-flex flex-column align-items-center justify-content-center" 
+                        onclick="exportDashboard()" style="min-height: 80px;">
+                    <i class="bi bi-download fs-4 mb-1"></i>
+                    <small class="text-center">Export</small>
+                </button>
+            </div>
+            <div class="col-4">
+                <button class="btn btn-outline-info btn-lg w-100 h-100 d-flex flex-column align-items-center justify-content-center" 
+                        onclick="configureDashboard()" style="min-height: 80px;">
+                    <i class="bi bi-gear fs-4 mb-1"></i>
+                    <small class="text-center">Settings</small>
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <!-- Low Stock Items -->
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-gradient-warning text-white">
+                    <h5 class="mb-0">
+                        <i class="bi bi-exclamation-triangle me-2"></i>Items Requiring Attention
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if data.low_stock_items or data.critical_stock_items %}
+                        <div class="list-group list-group-flush">
+                            {% for item in data.critical_stock_items %}
+                                <div class="list-group-item critical-stock border-0">
+                                    <div class="d-flex justify-content-between align-items-center flex-wrap">
+                                        <div class="mb-1 mb-sm-0">
+                                            <span class="stock-indicator stock-critical"></span>
+                                            <strong>{{ item.item.name }}</strong>
+                                            <small class="text-muted d-block d-sm-inline ms-sm-2">{{ item.item.category }}</small>
+                                        </div>
+                                        <div class="text-end">
+                                            <span class="badge bg-danger">{{ item.quantity }} {{ item.item.unit }}</span>
+                                            <small class="text-muted d-block">Min: {{ item.minimum_level }}</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                            
+                            {% for item in data.low_stock_items %}
+                                {% if not item.is_critical_stock() %}
+                                    <div class="list-group-item low-stock border-0">
+                                        <div class="d-flex justify-content-between align-items-center flex-wrap">
+                                            <div class="mb-1 mb-sm-0">
+                                                <span class="stock-indicator stock-low"></span>
+                                                <strong>{{ item.item.name }}</strong>
+                                                <small class="text-muted d-block d-sm-inline ms-sm-2">{{ item.item.category }}</small>
+                                            </div>
+                                            <div class="text-end">
+                                                <span class="badge bg-warning">{{ item.quantity }} {{ item.item.unit }}</span>
+                                                <small class="text-muted d-block">Min: {{ item.minimum_level }}</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="text-center text-muted py-4">
+                            <i class="bi bi-check-circle fs-1 text-success"></i>
+                            <p class="mt-2">All items are well stocked!</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Recent Usage -->
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-gradient-info text-white">
+                    <h5 class="mb-0">
+                        <i class="bi bi-clock-history me-2"></i>Recent Usage
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if data.recent_usage %}
+                        <div class="list-group list-group-flush">
+                            {% for log in data.recent_usage %}
+                                <div class="list-group-item border-0">
+                                    <div class="d-flex justify-content-between align-items-center flex-wrap">
+                                        <div class="mb-1 mb-sm-0">
+                                            <strong>{{ log.item.name }}</strong>
+                                            <small class="text-muted d-block d-sm-inline ms-sm-2">{{ log.date.strftime('%B %d, %Y') }}</small>
+                                        </div>
+                                        <div class="text-end">
+                                            <span class="badge bg-secondary">{{ log.quantity_used }} {{ log.item.unit }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="text-center text-muted py-4">
+                            <i class="bi bi-clipboard-x fs-1"></i>
+                            <p class="mt-2">No recent usage recorded</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Category Statistics -->
+    <div class="row">
+        <div class="col-lg-8 mb-4">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-gradient-primary text-white">
+                    <h5 class="mb-0">
+                        <i class="bi bi-pie-chart me-2"></i>Inventory by Category
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container" style="height: 300px;">
+                        <canvas id="categoryChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4 mb-4">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-gradient-secondary text-white">
+                    <h5 class="mb-0">
+                        <i class="bi bi-tags me-2"></i>Category Breakdown
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% for category, stats in data.category_stats.items() %}
+                        <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
+                            <span class="fw-medium">{{ category }}</span>
+                            <div class="text-end">
+                                <span class="badge bg-primary me-1">{{ stats.total_items }}</span>
+                                {% if stats.low_stock > 0 %}
+                                    <span class="badge bg-warning">{{ stats.low_stock }} low</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Active Alerts -->
+    {% if data.active_alerts %}
+        <div class="row">
+            <div class="col-12 mb-4">
+                <div class="card shadow-sm border-0">
+                    <div class="card-header bg-gradient-danger text-white">
+                        <h5 class="mb-0">
+                            <i class="bi bi-bell me-2"></i>Active Alerts
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        {% for alert in data.active_alerts[:5] %}
+                            <div class="alert alert-{{ 'danger' if alert.alert_type == 'critical_stock' else 'warning' }} alert-dismissible fade show animate-card" role="alert">
+                                <div class="d-flex align-items-start">
+                                    <i class="bi bi-{{ 'exclamation-triangle-fill' if alert.alert_type == 'critical_stock' else 'info-circle-fill' }} me-2 mt-1"></i>
+                                    <div class="flex-grow-1">
+                                        <strong>{{ alert.title }}</strong><br>
+                                        {{ alert.message }}
+                                        <small class="text-muted d-block mt-1">{{ alert.created_at.strftime('%B %d, %Y at %I:%M %p') }}</small>
+                                    </div>
+                                </div>
+                                <button type="button" class="btn-close" onclick="markAlertRead({{ alert.id }})" aria-label="Close"></button>
+                            </div>
+                        {% endfor %}
+                        
+                        {% if data.active_alerts|length > 5 %}
+                            <div class="text-center">
+                                <a href="{{ url_for('main.alerts') }}" class="btn btn-outline-primary animate-card">
+                                    <i class="bi bi-bell me-1"></i>View All {{ data.active_alerts|length }} Alerts
+                                </a>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+    
+    <!-- Facility Information -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-gradient-success text-white">
+                    <h5 class="mb-0">
+                        <i class="bi bi-building me-2"></i>Facility Information
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6 class="text-primary">{{ data.orphanage.name }}</h6>
+                            <p class="text-muted mb-3">
+                                <i class="bi bi-geo-alt me-1"></i>{{ data.orphanage.location }}
+                            </p>
+                        </div>
+                        <div class="col-md-6">
+                            {% if data.orphanage.contact_person %}
+                                <p class="mb-2">
+                                    <i class="bi bi-person me-2"></i>
+                                    <strong>Contact:</strong> {{ data.orphanage.contact_person }}
+                                </p>
+                            {% endif %}
+                            {% if data.orphanage.contact_phone %}
+                                <p class="mb-2">
+                                    <i class="bi bi-telephone me-2"></i>
+                                    <strong>Phone:</strong> 
+                                    <a href="tel:{{ data.orphanage.contact_phone }}" class="text-decoration-none">
+                                        {{ data.orphanage.contact_phone }}
+                                    </a>
+                                </p>
+                            {% endif %}
+                            {% if data.orphanage.contact_email %}
+                                <p class="mb-2">
+                                    <i class="bi bi-envelope me-2"></i>
+                                    <strong>Email:</strong> 
+                                    <a href="mailto:{{ data.orphanage.contact_email }}" class="text-decoration-none">
+                                        {{ data.orphanage.contact_email }}
+                                    </a>
+                                </p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+{% else %}
+    <div class="text-center py-5">
+        <i class="bi bi-exclamation-circle fs-1 text-warning"></i>
+        <h3>No Data Available</h3>
+        <p class="text-muted">Please set up your orphanage and add some inventory items to get started.</p>
+        <a href="{{ url_for('main.items') }}" class="btn btn-primary">Add Items</a>
+    </div>
+{% endif %}
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Category Chart with enhanced styling
+    const categoryData = {{ data.category_stats | tojson if data else '{}' }};
+    
+    if (Object.keys(categoryData).length > 0) {
+        const ctx = document.getElementById('categoryChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: Object.keys(categoryData),
+                datasets: [{
+                    data: Object.values(categoryData).map(stats => stats.total_items),
+                    backgroundColor: [
+                        'rgba(102, 126, 234, 0.8)',
+                        'rgba(54, 162, 235, 0.8)',
+                        'rgba(255, 206, 86, 0.8)',
+                        'rgba(75, 192, 192, 0.8)',
+                        'rgba(153, 102, 255, 0.8)',
+                        'rgba(255, 159, 64, 0.8)'
+                    ],
+                    borderColor: [
+                        'rgba(102, 126, 234, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)'
+                    ],
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            padding: 20,
+                            usePointStyle: true
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const label = context.label || '';
+                                const value = context.parsed;
+                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                const percentage = ((value / total) * 100).toFixed(1);
+                                return `${label}: ${value} items (${percentage}%)`;
+                            }
+                        }
+                    }
+                },
+                animation: {
+                    animateRotate: true,
+                    duration: 1000
+                }
+            }
+        });
+    }
+    
+    // Enhanced dashboard functions
+    function refreshDashboard() {
+        showAlert('Refreshing dashboard...', 'info');
+        window.location.reload();
+    }
+    
+    function markAlertRead(alertId) {
+        const alertElement = event.target.closest('.alert');
+        
+        // Add loading state
+        const originalContent = alertElement.innerHTML;
+        alertElement.innerHTML = '<div class="d-flex align-items-center"><div class="spinner-border spinner-border-sm me-2" role="status"></div>Marking as read...</div>';
+        
+        makeRequest(`/alerts/mark_read/${alertId}`, 'POST')
+            .then(response => {
+                if (response.success) {
+                    // Animate removal
+                    alertElement.style.transition = 'all 0.3s ease';
+                    alertElement.style.opacity = '0';
+                    alertElement.style.transform = 'translateX(100%)';
+                    
+                    setTimeout(() => {
+                        alertElement.remove();
+                        showAlert('Alert marked as read', 'success');
+                    }, 300);
+                } else {
+                    alertElement.innerHTML = originalContent;
+                    showAlert('Failed to mark alert as read', 'danger');
+                }
+            })
+            .catch(error => {
+                alertElement.innerHTML = originalContent;
+                showAlert('Error occurred while marking alert as read', 'danger');
+            });
+    }
+    
+    // Auto-refresh dashboard every 5 minutes
+    setInterval(function() {
+        if (document.visibilityState === 'visible') {
+            const lastRefresh = localStorage.getItem('dashboardLastRefresh');
+            const now = Date.now();
+            
+            if (!lastRefresh || now - parseInt(lastRefresh) > 300000) { // 5 minutes
+                localStorage.setItem('dashboardLastRefresh', now.toString());
+                window.location.reload();
+            }
+        }
+    }, 300000); // 5 minutes
+    
+    // Initialize tooltips
+    document.addEventListener('DOMContentLoaded', function() {
+        const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+    });
+</script>
+{% endblock %}

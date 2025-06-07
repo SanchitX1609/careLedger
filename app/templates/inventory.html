@@ -1,0 +1,439 @@
+{% extends "base.html" %}
+
+{% block page_title %}Inventory Management{% endblock %}
+
+{% block page_actions %}
+    <!-- Desktop Actions -->
+    <div class="btn-group d-none d-md-inline-flex" role="group">
+        <button class="btn btn-success animate-card" data-bs-toggle="modal" data-bs-target="#updateStockModal">
+            <i class="bi bi-plus-circle me-1"></i>Update Stock
+        </button>
+        <button class="btn btn-primary animate-card" onclick="window.location.reload()">
+            <i class="bi bi-arrow-clockwise me-1"></i>Refresh
+        </button>
+        <button class="btn btn-info animate-card" onclick="exportInventory()">
+            <i class="bi bi-download me-1"></i>Export
+        </button>
+    </div>
+    <!-- Mobile Actions Dropdown -->
+    <div class="dropdown d-md-none">
+        <button class="btn btn-primary dropdown-toggle" type="button" id="mobileActionsDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="bi bi-gear me-1"></i>Actions
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="mobileActionsDropdown">
+            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#updateStockModal">
+                <i class="bi bi-plus-circle me-2"></i>Update Stock
+            </a></li>
+            <li><a class="dropdown-item" href="#" onclick="window.location.reload()">
+                <i class="bi bi-arrow-clockwise me-2"></i>Refresh
+            </a></li>
+            <li><a class="dropdown-item" href="#" onclick="exportInventory()">
+                <i class="bi bi-download me-2"></i>Export
+            </a></li>
+        </ul>
+    </div>
+{% endblock %}
+
+{% block content %}
+
+    <!-- Filters -->
+    <div class="row mb-4 g-3">
+        <div class="col-lg-6 mb-3">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <form method="GET" class="row g-3">
+                        <div class="col-md-8 col-12">
+                            <label for="category" class="form-label">Filter by Category</label>
+                            <select class="form-select" id="category" name="category" onchange="this.form.submit()">
+                                <option value="">All Categories</option>
+                                {% for category_item in categories %}
+                                    <option value="{{ category_item }}" 
+                                            {% if category_item == selected_category %}selected{% endif %}>
+                                        {{ category_item }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-4 col-12 d-flex align-items-end">
+                            <button type="submit" class="btn btn-outline-primary w-100">Filter</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                <div class="card-body">
+                    <h6 class="text-white-50 mb-3 text-center">
+                        <i class="bi bi-clipboard-data me-2"></i>Stock Status Legend
+                    </h6>
+                    <div class="row text-center">
+                        <div class="col-4">
+                            <div class="bg-white bg-opacity-20 rounded-circle p-3 mb-2 mx-auto" style="width: fit-content;">
+                                <div class="stock-indicator stock-good" style="width: 16px; height: 16px;"></div>
+                            </div>
+                            <small class="text-white-50">Good Stock</small>
+                        </div>
+                        <div class="col-4">
+                            <div class="bg-white bg-opacity-20 rounded-circle p-3 mb-2 mx-auto" style="width: fit-content;">
+                                <div class="stock-indicator stock-low" style="width: 16px; height: 16px;"></div>
+                            </div>
+                            <small class="text-white-50">Low Stock</small>
+                        </div>
+                        <div class="col-4">
+                            <div class="bg-white bg-opacity-20 rounded-circle p-3 mb-2 mx-auto" style="width: fit-content;">
+                                <div class="stock-indicator stock-critical" style="width: 16px; height: 16px;"></div>
+                            </div>
+                            <small class="text-white-50">Critical</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Summary Cards -->
+    <div class="row mb-4 g-3">
+        <div class="col-6 col-md-3 mb-3">
+            <div class="card border-0 shadow-sm h-100 animate-card" style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); color: white;">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-white-50 mb-1">Total Items</h6>
+                            <h3 class="mb-0" id="totalItems">{{ inventories|length }}</h3>
+                        </div>
+                        <div class="bg-white bg-opacity-20 rounded-circle p-3 d-none d-sm-block">
+                            <i class="bi bi-boxes fs-4"></i>
+                        </div>
+                    </div>
+                    <div class="mt-3">
+                        <small class="text-white-50">Inventory items tracked</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-6 col-md-3 mb-3">
+            <div class="card border-0 shadow-sm h-100 animate-card" style="background: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%); color: white;">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-white-50 mb-1">Critical Stock</h6>
+                            <h3 class="mb-0" id="criticalItems">
+                                {% set critical_count = namespace(value=0) %}
+                                {% for inventory in inventories %}
+                                    {% if inventory.is_critical_stock() %}
+                                        {% set critical_count.value = critical_count.value + 1 %}
+                                    {% endif %}
+                                {% endfor %}
+                                {{ critical_count.value }}
+                            </h3>
+                        </div>
+                        <div class="bg-white bg-opacity-20 rounded-circle p-3">
+                            <i class="bi bi-exclamation-triangle fs-4"></i>
+                        </div>
+                    </div>
+                    <div class="mt-3">
+                        <small class="text-white-50">Needs immediate attention</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-xl-3 col-md-6 mb-3">
+            <div class="card border-0 shadow-sm h-100 animate-card" style="background: linear-gradient(135deg, #FBDA61 0%, #FF5ACD 100%); color: white;">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-white-50 mb-1">Low Stock</h6>
+                            <h3 class="mb-0" id="lowStockItems">
+                                {% set low_count = namespace(value=0) %}
+                                {% for inventory in inventories %}
+                                    {% if inventory.is_low_stock() and not inventory.is_critical_stock() %}
+                                        {% set low_count.value = low_count.value + 1 %}
+                                    {% endif %}
+                                {% endfor %}
+                                {{ low_count.value }}
+                            </h3>
+                        </div>
+                        <div class="bg-white bg-opacity-20 rounded-circle p-3">
+                            <i class="bi bi-exclamation-circle fs-4"></i>
+                        </div>
+                    </div>
+                    <div class="mt-3">
+                        <small class="text-white-50">Monitor closely</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-xl-3 col-md-6 mb-3">
+            <div class="card border-0 shadow-sm h-100 animate-card" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white;">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-white-50 mb-1">Well Stocked</h6>
+                            <h3 class="mb-0" id="wellStockedItems">
+                                {% set good_count = namespace(value=0) %}
+                                {% for inventory in inventories %}
+                                    {% if not inventory.is_low_stock() and not inventory.is_critical_stock() %}
+                                        {% set good_count.value = good_count.value + 1 %}
+                                    {% endif %}
+                                {% endfor %}
+                                {{ good_count.value }}
+                            </h3>
+                        </div>
+                        <div class="bg-white bg-opacity-20 rounded-circle p-3">
+                            <i class="bi bi-check-circle fs-4"></i>
+                        </div>
+                    </div>
+                    <div class="mt-3">
+                        <small class="text-white-50">Good stock levels</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Inventory Table -->
+    <div class="card border-0 shadow-sm">
+        <div class="card-header bg-gradient-primary text-white">
+            <h5 class="mb-0">
+                <i class="bi bi-box-seam me-2"></i>Current Inventory
+            </h5>
+        </div>
+        <div class="card-body">
+            {% if inventories %}
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover mb-0">
+                        <thead class="table-dark">
+                            <tr>
+                                <th class="d-none d-md-table-cell">Status</th>
+                                <th>Item</th>
+                                <th class="d-none d-lg-table-cell">Category</th>
+                                <th>Stock</th>
+                                <th class="d-none d-md-table-cell">Min Level</th>
+                                <th class="d-none d-lg-table-cell">Stock %</th>
+                                <th class="d-none d-md-table-cell">Updated</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for inventory in inventories %}
+                                <tr class="{% if inventory.is_critical_stock() %}table-danger{% elif inventory.is_low_stock() %}table-warning{% endif %}">
+                                    <td class="d-none d-md-table-cell">
+                                        <span class="stock-indicator 
+                                            {% if inventory.is_critical_stock() %}stock-critical
+                                            {% elif inventory.is_low_stock() %}stock-low
+                                            {% else %}stock-good{% endif %}">
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <span class="stock-indicator d-md-none me-2
+                                                {% if inventory.is_critical_stock() %}stock-critical
+                                                {% elif inventory.is_low_stock() %}stock-low
+                                                {% else %}stock-good{% endif %}">
+                                            </span>
+                                            <div>
+                                                <strong>{{ inventory.item.name }}</strong>
+                                                {% if inventory.item.description %}
+                                                    <br><small class="text-muted">{{ inventory.item.description }}</small>
+                                                {% endif %}
+                                                <div class="d-lg-none mt-1">
+                                                    <span class="badge bg-secondary">{{ inventory.item.category }}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="d-none d-lg-table-cell">
+                                        <span class="badge bg-secondary">{{ inventory.item.category }}</span>
+                                    </td>
+                                    <td>
+                                        <strong>{{ inventory.quantity }}</strong> {{ inventory.item.unit }}
+                                        <div class="d-md-none mt-1">
+                                            <small class="text-muted">Min: {{ inventory.minimum_level }} {{ inventory.item.unit }}</small>
+                                        </div>
+                                        <div class="d-lg-none mt-2">
+                                            <div class="progress" style="height: 15px;">
+                                                <div class="progress-bar 
+                                                    {% if inventory.stock_level_percentage() < 50 %}bg-danger
+                                                    {% elif inventory.stock_level_percentage() < 100 %}bg-warning
+                                                    {% else %}bg-success{% endif %}" 
+                                                    style="width: {% if inventory.stock_level_percentage() > 100 %}100{% else %}{{ inventory.stock_level_percentage() }}{% endif %}%">
+                                                    <small>{{ "%.0f"|format(inventory.stock_level_percentage()) }}%</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="d-none d-md-table-cell">{{ inventory.minimum_level }} {{ inventory.item.unit }}</td>
+                                    <td class="d-none d-lg-table-cell">
+                                        <div class="progress" style="height: 20px;">
+                                            <div class="progress-bar 
+                                                {% if inventory.stock_level_percentage() < 50 %}bg-danger
+                                                {% elif inventory.stock_level_percentage() < 100 %}bg-warning
+                                                {% else %}bg-success{% endif %}" 
+                                                style="width: {% if inventory.stock_level_percentage() > 100 %}100{% else %}{{ inventory.stock_level_percentage() }}{% endif %}%">
+                                                {{ "%.0f"|format(inventory.stock_level_percentage()) }}%
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="d-none d-md-table-cell">
+                                        {{ inventory.last_updated.strftime('%m/%d/%Y') }}
+                                    </td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm">
+                                            <button class="btn btn-outline-primary" 
+                                                    onclick="openUpdateModal({{ inventory.id }}, '{{ inventory.item.name }}', {{ inventory.quantity }}, '{{ inventory.item.unit }}')">
+                                                <i class="bi bi-pencil"></i>
+                                            </button>
+                                            <a href="{{ url_for('main.forecasting', item_id=inventory.item.id) }}" 
+                                               class="btn btn-outline-info">
+                                                <i class="bi bi-graph-up-arrow"></i>
+                                            </a>
+                                        </div>
+                                        <div class="d-md-none mt-2">
+                                            <small class="text-muted">Updated: {{ inventory.last_updated.strftime('%m/%d/%Y') }}</small>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="text-center py-5">
+                    <i class="bi bi-box fs-1 text-muted"></i>
+                    <h4>No Inventory Items</h4>
+                    <p class="text-muted">No items found for the selected category.</p>
+                    {% if selected_category %}
+                        <a href="{{ url_for('main.inventory') }}" class="btn btn-outline-primary">Show All Items</a>
+                    {% else %}
+                        <a href="{{ url_for('main.items') }}" class="btn btn-primary">Add Items</a>
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+<!-- Update Stock Modal -->
+<div class="modal fade" id="updateStockModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Update Stock</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="updateStockForm">
+                    <input type="hidden" id="inventory_id" name="inventory_id">
+                    
+                    <div class="mb-3">
+                        <label for="item_name" class="form-label">Item</label>
+                        <input type="text" class="form-control" id="item_name" readonly>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="current_stock" class="form-label">Current Stock</label>
+                        <div class="input-group">
+                            <input type="number" class="form-control" id="current_stock" readonly>
+                            <span class="input-group-text" id="stock_unit"></span>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="operation" class="form-label">Operation</label>
+                        <select class="form-select" id="operation" name="operation" required>
+                            <option value="add">Add Stock (Received)</option>
+                            <option value="subtract">Remove Stock (Used)</option>
+                            <option value="set">Set Stock (Adjust)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="quantity_change" class="form-label">Quantity</label>
+                        <div class="input-group">
+                            <input type="number" class="form-control" id="quantity_change" 
+                                   name="quantity_change" step="0.1" min="0" required>
+                            <span class="input-group-text" id="change_unit"></span>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="notes" class="form-label">Notes (Optional)</label>
+                        <textarea class="form-control" id="notes" name="notes" rows="3" 
+                                  placeholder="Add any notes about this stock update..."></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="submitStockUpdate()">Update Stock</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    let currentInventoryId = null;
+    
+    function openUpdateModal(inventoryId, itemName, currentStock, unit) {
+        currentInventoryId = inventoryId;
+        document.getElementById('inventory_id').value = inventoryId;
+        document.getElementById('item_name').value = itemName;
+        document.getElementById('current_stock').value = currentStock;
+        document.getElementById('stock_unit').textContent = unit;
+        document.getElementById('change_unit').textContent = unit;
+        
+        // Reset form
+        document.getElementById('operation').value = 'add';
+        document.getElementById('quantity_change').value = '';
+        document.getElementById('notes').value = '';
+        
+        // Show modal
+        new bootstrap.Modal(document.getElementById('updateStockModal')).show();
+    }
+    
+    function submitStockUpdate() {
+        const form = document.getElementById('updateStockForm');
+        const formData = new FormData(form);
+        
+        const data = {
+            orphanage_id: 1, // Default to first orphanage for demo
+            item_id: null, // Will be resolved from inventory_id on backend
+            inventory_id: parseInt(formData.get('inventory_id')),
+            operation: formData.get('operation'),
+            quantity_change: parseFloat(formData.get('quantity_change')),
+            notes: formData.get('notes')
+        };
+        
+        makeRequest('/inventory/update', 'POST', data)
+            .then(response => {
+                if (response.success) {
+                    showAlert(response.message, 'success');
+                    bootstrap.Modal.getInstance(document.getElementById('updateStockModal')).hide();
+                    // Refresh the page to show updated data
+                    setTimeout(() => window.location.reload(), 1000);
+                } else {
+                    showAlert(response.message, 'danger');
+                }
+            });
+    }
+    
+    // Update operation change handler
+    document.getElementById('operation').addEventListener('change', function() {
+        const quantityLabel = document.querySelector('label[for="quantity_change"]');
+        const operation = this.value;
+        
+        if (operation === 'add') {
+            quantityLabel.textContent = 'Quantity to Add';
+        } else if (operation === 'subtract') {
+            quantityLabel.textContent = 'Quantity to Remove';
+        } else if (operation === 'set') {
+            quantityLabel.textContent = 'New Total Quantity';
+        }
+    });
+</script>
+{% endblock %}
