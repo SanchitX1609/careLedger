@@ -126,10 +126,29 @@ def forecasting():
     item = Item.query.get(item_id)
     inventory = Inventory.query.filter_by(orphanage_id=orphanage_id, item_id=item_id).first()
     
+    # Create serializable versions for JavaScript
+    item_data = {
+        'id': item.id,
+        'name': item.name,
+        'description': item.description,
+        'category': item.category,
+        'unit': item.unit
+    } if item else None
+    
+    inventory_data = {
+        'id': inventory.id,
+        'quantity': inventory.quantity,
+        'minimum_level': inventory.minimum_level,
+        'maximum_level': inventory.maximum_level,
+        'last_updated': inventory.last_updated.isoformat() if inventory.last_updated else None
+    } if inventory else None
+    
     return render_template('forecasting.html', 
                          forecasting_data=forecasting_data,
                          item=item,
-                         inventory=inventory)
+                         inventory=inventory,
+                         item_data=item_data,
+                         inventory_data=inventory_data)
 
 @main_bp.route('/api/forecasting/<int:orphanage_id>/<int:item_id>')
 @login_required
@@ -182,12 +201,18 @@ def reports():
     if request.args.get('end_date'):
         end_date = datetime.strptime(request.args.get('end_date'), '%Y-%m-%d').date()
     
+    # Get usage report and summary statistics
     usage_report = InventoryService.generate_usage_report(orphanage_id, start_date, end_date)
+    summary_stats = InventoryService.get_report_summary_stats(orphanage_id)
     
     return render_template('reports.html', 
                          usage_report=usage_report,
                          start_date=start_date,
-                         end_date=end_date)
+                         end_date=end_date,
+                         total_items=summary_stats['total_items'],
+                         low_stock_count=summary_stats['low_stock_count'],
+                         total_usage_logs=summary_stats['total_usage_logs'],
+                         total_orphanages=summary_stats['total_orphanages'])
 
 @main_bp.route('/items')
 @login_required
@@ -322,12 +347,16 @@ def delete_item(item_id):
 def get_orphanage(orphanage_id):
     orphanage = Orphanage.query.get_or_404(orphanage_id)
     return jsonify({
-        'id': orphanage.id,
-        'name': orphanage.name,
-        'location': orphanage.location,
-        'contact_person': orphanage.contact_person,
-        'contact_phone': orphanage.contact_phone,
-        'contact_email': orphanage.contact_email
+        'success': True,
+        'orphanage': {
+            'id': orphanage.id,
+            'name': orphanage.name,
+            'location': orphanage.location,
+            'contact_person': orphanage.contact_person,
+            'phone': orphanage.contact_phone,
+            'email': orphanage.contact_email,
+            'description': getattr(orphanage, 'description', '')  # Handle missing field gracefully
+        }
     })
 
 @main_bp.route('/orphanages', methods=['POST'])
@@ -338,16 +367,20 @@ def add_orphanage():
         return jsonify({'success': False, 'message': 'Admin privileges required'}), 403
     
     data = request.get_json()
-    orphanage = Orphanage(
-        name=data['name'],
-        location=data['location'],
-        contact_person=data.get('contact_person'),
-        contact_phone=data.get('contact_phone'),
-        contact_email=data.get('contact_email')
-    )
-    db.session.add(orphanage)
-    db.session.commit()
-    return jsonify({'success': True, 'message': 'Orphanage added', 'id': orphanage.id})
+    try:
+        orphanage = Orphanage(
+            name=data['name'],
+            location=data['location'],
+            contact_person=data.get('contact_person'),
+            contact_phone=data.get('phone'),
+            contact_email=data.get('email')
+        )
+        db.session.add(orphanage)
+        db.session.commit()
+        return jsonify({'success': True, 'message': 'Orphanage added successfully', 'id': orphanage.id})
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'success': False, 'message': f'Error adding orphanage: {str(e)}'})
 
 @main_bp.route('/orphanages/<int:orphanage_id>', methods=['PUT'])
 @login_required
@@ -357,14 +390,19 @@ def update_orphanage(orphanage_id):
         return jsonify({'success': False, 'message': 'Admin privileges required'}), 403
     
     data = request.get_json()
-    orphanage = Orphanage.query.get_or_404(orphanage_id)
-    orphanage.name = data.get('name', orphanage.name)
-    orphanage.location = data.get('location', orphanage.location)
-    orphanage.contact_person = data.get('contact_person', orphanage.contact_person)
-    orphanage.contact_phone = data.get('contact_phone', orphanage.contact_phone)
-    orphanage.contact_email = data.get('contact_email', orphanage.contact_email)
-    db.session.commit()
-    return jsonify({'success': True, 'message': 'Orphanage updated'})
+    try:
+        orphanage = Orphanage.query.get_or_404(orphanage_id)
+        orphanage.name = data.get('name', orphanage.name)
+        orphanage.location = data.get('location', orphanage.location)
+        orphanage.contact_person = data.get('contact_person', orphanage.contact_person)
+        # Map frontend field names to backend field names
+        orphanage.contact_phone = data.get('phone', orphanage.contact_phone)
+        orphanage.contact_email = data.get('email', orphanage.contact_email)
+        db.session.commit()
+        return jsonify({'success': True, 'message': 'Orphanage updated successfully'})
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'success': False, 'message': f'Error updating orphanage: {str(e)}'})
 
 @main_bp.route('/orphanages/<int:orphanage_id>', methods=['DELETE'])
 @login_required
@@ -373,10 +411,19 @@ def delete_orphanage(orphanage_id):
     if current_user.role.name != 'admin':
         return jsonify({'success': False, 'message': 'Admin privileges required'}), 403
     
-    orphanage = Orphanage.query.get_or_404(orphanage_id)
-    db.session.delete(orphanage)
-    db.session.commit()
-    return jsonify({'success': True, 'message': 'Orphanage deleted'})
+    try:
+        orphanage = Orphanage.query.get_or_404(orphanage_id)
+        
+        # Check if orphanage has any related data that would prevent deletion
+        if orphanage.inventories:
+            return jsonify({'success': False, 'message': 'Cannot delete orphanage with existing inventory records. Please remove all inventory items first.'})
+        
+        db.session.delete(orphanage)
+        db.session.commit()
+        return jsonify({'success': True, 'message': 'Orphanage deleted successfully'})
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'success': False, 'message': f'Error deleting orphanage: {str(e)}'})
 
 @main_bp.route('/inventory/<int:inventory_id>', methods=['GET'])
 @login_required

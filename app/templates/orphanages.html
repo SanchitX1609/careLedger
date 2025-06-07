@@ -38,9 +38,33 @@
                                         <i class="bi bi-geo-alt me-1 text-primary"></i>{{ orphanage.location }}<br>
                                         <i class="bi bi-person me-1 text-info"></i>{{ orphanage.contact_person }}<br>
                                         <span class="d-none d-sm-block">
-                                            <i class="bi bi-envelope me-1 text-success"></i>{{ orphanage.email }}<br>
-                                            <i class="bi bi-telephone me-1 text-warning"></i>{{ orphanage.phone }}
+                                            {% if orphanage.contact_email %}
+                                            <i class="bi bi-envelope me-1 text-success"></i>{{ orphanage.contact_email }}<br>
+                                            {% endif %}
+                                            {% if orphanage.contact_phone %}
+                                            <i class="bi bi-telephone me-1 text-warning"></i>{{ orphanage.contact_phone }}
+                                            {% endif %}
                                         </span>
+                                        <!-- Mobile Contact Info -->
+                                        <div class="d-sm-none">
+                                            <button class="btn btn-link p-0 text-decoration-none" type="button" 
+                                                    data-bs-toggle="collapse" data-bs-target="#contact-{{ orphanage.id }}" 
+                                                    aria-expanded="false">
+                                                <i class="bi bi-info-circle me-1"></i>Contact Info
+                                            </button>
+                                            <div class="collapse mt-2" id="contact-{{ orphanage.id }}">
+                                                {% if orphanage.contact_email %}
+                                                <small class="d-block">
+                                                    <i class="bi bi-envelope me-1 text-success"></i>{{ orphanage.contact_email }}
+                                                </small>
+                                                {% endif %}
+                                                {% if orphanage.contact_phone %}
+                                                <small class="d-block">
+                                                    <i class="bi bi-telephone me-1 text-warning"></i>{{ orphanage.contact_phone }}
+                                                </small>
+                                                {% endif %}
+                                            </div>
+                                        </div>
                                     </p>
                                     <small class="text-muted">
                                         Created: {{ orphanage.created_at.strftime('%m/%d/%Y') }}
@@ -109,12 +133,6 @@
                             <label for="orphanage_phone" class="form-label">Phone</label>
                             <input type="tel" class="form-control" id="orphanage_phone" name="phone" required>
                         </div>
-                        
-                        <div class="mb-3">
-                            <label for="orphanage_description" class="form-label">Description (Optional)</label>
-                            <textarea class="form-control" id="orphanage_description" name="description" rows="3" 
-                                      placeholder="Brief description of the orphanage..."></textarea>
-                        </div>
                     </form>
                 </div>
                 <div class="modal-footer">
@@ -161,11 +179,6 @@
                             <label for="edit_orphanage_phone" class="form-label">Phone</label>
                             <input type="tel" class="form-control" id="edit_orphanage_phone" name="phone" required>
                         </div>
-                        
-                        <div class="mb-3">
-                            <label for="edit_orphanage_description" class="form-label">Description (Optional)</label>
-                            <textarea class="form-control" id="edit_orphanage_description" name="description" rows="3"></textarea>
-                        </div>
                     </form>
                 </div>
                 <div class="modal-footer">
@@ -188,11 +201,10 @@
             location: formData.get('location'),
             contact_person: formData.get('contact_person'),
             email: formData.get('email'),
-            phone: formData.get('phone'),
-            description: formData.get('description')
+            phone: formData.get('phone')
         };
         
-        makeRequest('/api/orphanages', 'POST', data)
+        makeRequest('/orphanages', 'POST', data)
             .then(response => {
                 if (response.success) {
                     showAlert(response.message, 'success');
@@ -206,7 +218,7 @@
     
     function editOrphanage(orphanageId) {
         // Fetch orphanage data and populate edit form
-        makeRequest(`/api/orphanages/${orphanageId}`, 'GET')
+        makeRequest(`/orphanages/${orphanageId}`, 'GET')
             .then(response => {
                 if (response.success) {
                     const orphanage = response.orphanage;
@@ -216,7 +228,6 @@
                     document.getElementById('edit_contact_person').value = orphanage.contact_person;
                     document.getElementById('edit_orphanage_email').value = orphanage.email;
                     document.getElementById('edit_orphanage_phone').value = orphanage.phone;
-                    document.getElementById('edit_orphanage_description').value = orphanage.description || '';
                     
                     new bootstrap.Modal(document.getElementById('editOrphanageModal')).show();
                 } else {
@@ -235,11 +246,10 @@
             location: formData.get('location'),
             contact_person: formData.get('contact_person'),
             email: formData.get('email'),
-            phone: formData.get('phone'),
-            description: formData.get('description')
+            phone: formData.get('phone')
         };
         
-        makeRequest(`/api/orphanages/${orphanageId}`, 'PUT', data)
+        makeRequest(`/orphanages/${orphanageId}`, 'PUT', data)
             .then(response => {
                 if (response.success) {
                     showAlert(response.message, 'success');
@@ -253,7 +263,7 @@
     
     function deleteOrphanage(orphanageId) {
         if (confirm('Are you sure you want to delete this orphanage? This action cannot be undone.')) {
-            makeRequest(`/api/orphanages/${orphanageId}`, 'DELETE')
+            makeRequest(`/orphanages/${orphanageId}`, 'DELETE')
                 .then(response => {
                     if (response.success) {
                         showAlert(response.message, 'success');

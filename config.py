@@ -14,14 +14,26 @@ class Config:
     SQLALCHEMY_DATABASE_URI = 'sqlite:////workspaces/AidTransparency-website/careLedger/instance/careledger.db'  # Hardcoded for testing
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     
+    # Enhanced UI settings
+    ENABLE_PWA = os.environ.get('ENABLE_PWA', 'true').lower() == 'true'
+    ENABLE_REAL_TIME_UPDATES = os.environ.get('ENABLE_REAL_TIME_UPDATES', 'true').lower() == 'true'
+    ENABLE_MOBILE_OPTIMIZATIONS = os.environ.get('ENABLE_MOBILE_OPTIMIZATIONS', 'true').lower() == 'true'
+
+
     # Security Configuration
     WTF_CSRF_ENABLED = os.environ.get('WTF_CSRF_ENABLED', 'True').lower() == 'true'
     WTF_CSRF_TIME_LIMIT = 3600  # 1 hour
     WTF_CSRF_SSL_STRICT = False  # Disable SSL strict for development
-    SESSION_COOKIE_SECURE = os.environ.get('SESSION_COOKIE_SECURE', 'False').lower() == 'true'
-    SESSION_COOKIE_HTTPONLY = os.environ.get('SESSION_COOKIE_HTTPONLY', 'True').lower() == 'true'
-    SESSION_COOKIE_SAMESITE = 'Lax'  # Allow cross-origin for development
-    PERMANENT_SESSION_LIFETIME = timedelta(hours=1)
+    # SESSION_COOKIE_SECURE = os.environ.get('SESSION_COOKIE_SECURE', 'False').lower() == 'true'
+    # SESSION_COOKIE_HTTPONLY = os.environ.get('SESSION_COOKIE_HTTPONLY', 'True').lower() == 'true'
+    # SESSION_COOKIE_SAMESITE = 'Lax'  # Allow cross-origin for development
+    # PERMANENT_SESSION_LIFETIME = timedelta(hours=1)
+
+    WTF_CSRF_CHECK_DEFAULT = False  # Disable CSRF for development
+    SESSION_COOKIE_SECURE = False  # Disable for development
+    SESSION_COOKIE_HTTPONLY = False  # Disable for development
+    SESSION_COOKIE_SAMESITE = None  # More permissive for development
+    PERMANENT_SESSION_LIFETIME = timedelta(hours=24)  # Extended for development
     
     # Cache Configuration
     CACHE_TYPE = os.environ.get('CACHE_TYPE', 'SimpleCache')
@@ -39,9 +51,24 @@ class Config:
     # Alert Configuration
     ALERT_CHECK_INTERVAL = timedelta(hours=6)
     EMAIL_ALERTS = os.environ.get('EMAIL_ALERTS', 'False').lower() == 'true'
+    # Cache settings
+    CACHE_TYPE = os.environ.get('CACHE_TYPE', 'simple')
+    CACHE_REDIS_URL = os.environ.get('CACHE_REDIS_URL')
+    CACHE_DEFAULT_TIMEOUT = 300
     
+    # Compression
+    COMPRESS_MIMETYPES = [
+        'text/html', 'text/css', 'text/xml', 'application/json',
+        'application/javascript', 'text/javascript'
+    ]
+    COMPRESS_LEVEL = 6
+    COMPRESS_MIN_SIZE = 500
+
+
 class DevelopmentConfig(Config):
     DEBUG = True
+    WTF_CSRF_ENABLED = False  # Disable CSRF for development
+    WTF_CSRF_CHECK_DEFAULT = False
     
 class ProductionConfig(Config):
     DEBUG = False

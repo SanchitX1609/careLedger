@@ -683,6 +683,100 @@
             color: var(--text-secondary);
             line-height: 1.4;
         }
+        [data-bs-theme="dark"] .alert-danger { background-color: var(--bs-danger-bg-subtle-dark, #dc3545); border-color: var(--bs-danger-border-subtle-dark, #dc3545); color: var(--bs-danger-text-emphasis-dark, white); }
+        /* MODIFIED for better dark mode appearance */
+        [data-bs-theme="dark"] .alert-warning {
+            background-color: #4A3B00; /* Darker yellow/brown */
+            border-color: #665100;
+            color: #ffffff; /* Light text */
+        }
+        /* MODIFIED for better dark mode appearance */
+        [data-bs-theme="dark"] .alert-info {
+            background-color: #00424A; /* Darker cyan/teal */
+            border-color: #005F6B;
+            color: #ffffff; /* Light text */
+        }
+        [data-bs-theme="dark"] .alert-light { background-color: #f8f9fa; border-color: #f8f9fa; color: black; }
+        [data-bs-theme="dark"] .dropdown-menu { background-color: var(--bs-secondary-bg-dark); border-color: var(--bs-border-color-dark); }
+        [data-bs-theme="dark"] .dropdown-item { color: var(--bs-body-color-dark); }
+        [data-bs-theme="dark"] .dropdown-item:hover, [data-bs-theme="dark"] .dropdown-item:focus { color: var(--bs-emphasis-color-dark); background-color: var(--bs-tertiary-bg-dark); }
+
+        /* ADDED for dark mode gradient card headers */
+        [data-bs-theme="dark"] .card-header.bg-gradient-primary {
+            background-image: none;
+            background-color: #0d6efd; /* Using the existing .bg-primary dark mode color */
+            color: white;
+        }
+        [data-bs-theme="dark"] .card-header.bg-gradient-warning {
+            background-image: none;
+            background-color: #4A3B00; /* Consistent with alert-warning dark */
+            color: white;
+        }
+        [data-bs-theme="dark"] .card-header.bg-gradient-info {
+            background-image: none;
+            background-color: #00424A; /* Consistent with alert-info dark */
+            color: white;
+        }
+        [data-bs-theme="dark"] .card-header.bg-gradient-secondary {
+            background-image: none;
+            background-color: #495057; /* Darker gray */
+            color: white;
+        }
+        [data-bs-theme="dark"] .card-header.bg-gradient-success {
+            background-image: none;
+            background-color: #145A32; /* Darker green */
+            color: white;
+        }
+        [data-bs-theme="dark"] .card-header.bg-gradient-danger {
+            background-image: none;
+            background-color: #dc3545; /* Using the existing .alert-danger dark mode color */
+            color: white;
+        }
+
+        /* ADDED for dark mode gradient cards */
+        [data-bs-theme="dark"] .metric-card-gradient,
+        [data-bs-theme="dark"] .reorder-detail-card.gradient-card,
+        [data-bs-theme="dark"] .info-card-gradient {
+            color: white; /* Ensure text is white on dark gradients */
+        }
+
+        [data-bs-theme="dark"] .metric-card-purple,
+        [data-bs-theme="dark"] .gradient-purple {
+            background: linear-gradient(135deg, #3E2723 0%, #5D4037 100%) !important; /* Dark Brown Gradient */
+        }
+
+        [data-bs-theme="dark"] .metric-card-pink,
+        [data-bs-theme="dark"] .gradient-pink {
+            background: linear-gradient(135deg, #4A148C 0%, #7B1FA2 100%) !important; /* Dark Purple Gradient */
+        }
+
+        [data-bs-theme="dark"] .metric-card-blue,
+        [data-bs-theme="dark"] .gradient-blue {
+            background: linear-gradient(135deg, #0D47A1 0%, #1976D2 100%) !important; /* Dark Blue Gradient */
+        }
+
+        [data-bs-theme="dark"] .metric-card-yellow,
+        [data-bs-theme="dark"] .gradient-yellow {
+            background: linear-gradient(135deg, #E65100 0%, #F57C00 100%) !important; /* Dark Orange Gradient */
+        }
+        
+        /* Ensure text within these gradient cards is light */
+        [data-bs-theme="dark"] .metric-card-gradient .metric-label,
+        [data-bs-theme="dark"] .metric-card-gradient .metric-trend {
+            color: rgba(255, 255, 255, 0.7) !important; /* Lighter text for labels and trends */
+        }
+
+        [data-bs-theme="dark"] .reorder-detail-card.gradient-card .text-white-50,
+        [data-bs-theme="dark"] .info-card-gradient .text-white-50 {
+            color: rgba(255, 255, 255, 0.7) !important; /* Lighter text for sub-headings */
+        }
+
+        [data-bs-theme="dark"] .reorder-detail-card.gradient-card .badge.bg-white,
+        [data-bs-theme="dark"] .info-card-gradient .badge.bg-white{
+            background-color: var(--bs-dark-bg-subtle) !important; /* Darker badge background */
+            color: var(--bs-light-text-emphasis) !important; /* Light text for badge */
+        }
+
     </style>
     {% block extra_css %}{% endblock %}
 </head>
